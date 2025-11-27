@@ -8,7 +8,7 @@ public class V4_CreateUserRolesTable implements Migration {
 
     @Override
     public void run(Connection connection) throws SQLException {
-        String sql = """
+        String query = """
         CREATE TABLE IF NOT EXISTS user_roles (
             user_id BIGINT UNSIGNED NOT NULL,
             role_id INT UNSIGNED NOT NULL,
@@ -36,7 +36,7 @@ public class V4_CreateUserRolesTable implements Migration {
         """;
 
         try (Statement statement = connection.createStatement()) {
-            statement.execute(sql);
+            statement.execute(query);
         }
     }
 }

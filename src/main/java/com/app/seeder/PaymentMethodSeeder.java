@@ -16,14 +16,14 @@ public class PaymentMethodSeeder implements Seeder {
                 {"Card", "Credit/Debit card payment"},
         };
 
-        String sql = "INSERT IGNORE INTO payment_methods (name, description) VALUES (?, ?)";
+        String query = "INSERT IGNORE INTO payment_methods (name, description) VALUES (?, ?)";
 
-        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
 
             for (String[] method : methods) {
-                stmt.setString(1, method[0]);
-                stmt.setString(2, method[1]);
-                stmt.executeUpdate();
+                preparedStatement.setString(1, method[0]);
+                preparedStatement.setString(2, method[1]);
+                preparedStatement.executeUpdate();
             }
 
             System.out.println("Payment methods seeded.");

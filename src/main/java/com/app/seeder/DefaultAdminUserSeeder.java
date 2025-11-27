@@ -24,7 +24,7 @@ public class DefaultAdminUserSeeder implements Seeder {
                 //Insert admin since not found
                 String insertSql = """
                     INSERT INTO users
-                    (public_id, username, password_hash, first_name, last_name, email)
+                    (public_id, username, password, first_name, last_name, email)
                     VALUES (?, ?, ?, ?, ?, ?)
                 """;
 

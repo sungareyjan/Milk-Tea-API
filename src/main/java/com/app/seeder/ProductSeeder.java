@@ -43,14 +43,14 @@ public class ProductSeeder implements Seeder {
             }
 
             //Insert product
-            try (PreparedStatement stmt = connection.prepareStatement(insertSql)) {
-                stmt.setString(1, (String)p[0]);
-                stmt.setString(2, (String)p[1]);
-                stmt.setInt(3, (int)p[2]);
-                stmt.setInt(4, (int)p[3]);
-                stmt.setDouble(5, (double)p[4]);
-                stmt.setInt(6, (int)p[5]);
-                stmt.executeUpdate();
+            try (PreparedStatement preparedStatement = connection.prepareStatement(insertSql)) {
+                preparedStatement.setString(1, (String)p[0]);
+                preparedStatement.setString(2, (String)p[1]);
+                preparedStatement.setInt(3, (int)p[2]);
+                preparedStatement.setInt(4, (int)p[3]);
+                preparedStatement.setDouble(5, (double)p[4]);
+                preparedStatement.setInt(6, (int)p[5]);
+                preparedStatement.executeUpdate();
 
                 System.out.println("Inserted product: " + p[0]);
             }

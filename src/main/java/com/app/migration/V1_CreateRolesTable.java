@@ -8,7 +8,7 @@ public class V1_CreateRolesTable implements Migration {
 
     @Override
     public void run(Connection connection) throws SQLException {
-        String sql = """
+        String query = """
         CREATE TABLE IF NOT EXISTS roles (
             id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,     -- internal PK
             name VARCHAR(100) NOT NULL UNIQUE,              -- role name (admin, cashier, etc.)
@@ -23,7 +23,7 @@ public class V1_CreateRolesTable implements Migration {
         """;
 
         try (Statement statement = connection.createStatement()) {
-            statement.execute(sql);
+            statement.execute(query);
         }
     }
 }

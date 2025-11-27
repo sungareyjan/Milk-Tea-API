@@ -7,7 +7,7 @@ import java.sql.Statement;
 public class V9_CreateProductTable implements Migration {
     @Override
     public void run(Connection connection) throws SQLException {
-        String sql = """
+        String query = """
             CREATE TABLE IF NOT EXISTS products (
                 id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
                 name VARCHAR(100) NOT NULL,
@@ -40,7 +40,7 @@ public class V9_CreateProductTable implements Migration {
         """;
 
         try (Statement statement = connection.createStatement()) {
-            statement.execute(sql);
+            statement.execute(query);
         }
     }
 }

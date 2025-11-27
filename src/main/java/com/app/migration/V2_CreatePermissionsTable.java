@@ -8,7 +8,7 @@ public class V2_CreatePermissionsTable implements Migration {
 
     @Override
     public void run(Connection connection) throws SQLException {
-        String sql = """
+        String query = """
         CREATE TABLE IF NOT EXISTS permissions (
             id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,         -- internal PK
             name VARCHAR(100) NOT NULL UNIQUE,                     -- e.g., create_order, view_reports
@@ -23,7 +23,7 @@ public class V2_CreatePermissionsTable implements Migration {
         """;
 
         try (Statement statement = connection.createStatement()) {
-            statement.execute(sql);
+            statement.execute(query);
         }
     }
 }

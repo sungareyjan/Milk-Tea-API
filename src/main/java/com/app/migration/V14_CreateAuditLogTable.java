@@ -8,7 +8,7 @@ public class V14_CreateAuditLogTable implements Migration{
 
     @Override
     public void run(Connection connection) throws SQLException {
-        String sql = """
+        String query = """
         CREATE TABLE IF NOT EXISTS audit_logs (
             id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
             entity_name VARCHAR(100) NOT NULL,           -- Table or entity being changed, e.g., users, orders
@@ -25,8 +25,8 @@ public class V14_CreateAuditLogTable implements Migration{
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
         """;
 
-        try(Statement statement= connection.createStatement()) {
-            statement.execute(sql);
+        try(Statement statement = connection.createStatement()) {
+            statement.execute(query);
         }
     }
 }

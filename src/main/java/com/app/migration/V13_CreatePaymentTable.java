@@ -8,7 +8,7 @@ public class V13_CreatePaymentTable implements Migration{
 
     @Override
     public void run(Connection connection) throws SQLException {
-        String sql= """
+        String query= """
         CREATE TABLE IF NOT EXISTS payments (
             id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
             public_id CHAR(50) NOT NULL UNIQUE,
@@ -31,7 +31,7 @@ public class V13_CreatePaymentTable implements Migration{
         """;
 
         try(Statement statement = connection.createStatement()){
-            statement.execute(sql);
+            statement.execute(query);
         }
     }
 }

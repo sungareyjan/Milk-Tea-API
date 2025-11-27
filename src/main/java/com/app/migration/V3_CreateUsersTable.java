@@ -8,12 +8,12 @@ public class V3_CreateUsersTable implements Migration {
 
     @Override
     public void run(Connection connection) throws SQLException {
-        String sql = """
+        String query = """
         CREATE TABLE IF NOT EXISTS users (
             id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,  -- internal PK
             public_id CHAR(50) NOT NULL UNIQUE,             -- UUID or public reference
             username VARCHAR(50) NOT NULL UNIQUE,
-            password_hash VARCHAR(255) NOT NULL,
+            password VARCHAR(255) NOT NULL,
             first_name VARCHAR(50) NOT NULL,
             middle_name VARCHAR(50),
             last_name VARCHAR(50) NOT NULL,
@@ -30,7 +30,7 @@ public class V3_CreateUsersTable implements Migration {
         """;
 
         try (Statement statement = connection.createStatement()) {
-            statement.execute(sql);
+            statement.execute(query);
         }
     }
 }

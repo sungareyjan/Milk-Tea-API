@@ -8,7 +8,7 @@ public class V7_CreateProductCategoryTable implements  Migration{
 
     @Override
     public void run(Connection connection) throws SQLException {
-        String sql = """
+        String query = """
             CREATE TABLE IF NOT EXISTS product_categories (
                 id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
                 name VARCHAR(100) NOT NULL UNIQUE,
@@ -20,7 +20,7 @@ public class V7_CreateProductCategoryTable implements  Migration{
             """;
 
         try (Statement statement = connection.createStatement()){
-            statement.execute(sql);
+            statement.execute(query);
         }
     }
 }

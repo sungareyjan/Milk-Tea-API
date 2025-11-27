@@ -14,14 +14,14 @@ public class ProductSizeSeeder implements Seeder{
                 {"Large", "500ml"}
         };
 
-        String sql = "INSERT IGNORE INTO product_sizes (name, description) VALUES (?, ?)";
+        String query = "INSERT IGNORE INTO product_sizes (name, description) VALUES (?, ?)";
 
-        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
 
             for (String[] perm : size) {
-                stmt.setString(1, perm[0]);
-                stmt.setString(2, perm[1]);
-                stmt.executeUpdate();
+                preparedStatement.setString(1, perm[0]);
+                preparedStatement.setString(2, perm[1]);
+                preparedStatement.executeUpdate();
             }
 
             System.out.println("Size seeded.");

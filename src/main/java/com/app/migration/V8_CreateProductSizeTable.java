@@ -7,7 +7,7 @@ import java.sql.Statement;
 public class V8_CreateProductSizeTable implements Migration{
     @Override
     public void run(Connection connection) throws SQLException {
-        String sql = """
+        String query = """
             CREATE TABLE IF NOT EXISTS product_sizes (
             id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
             name VARCHAR(50) NOT NULL UNIQUE,  -- e.g., Small, Medium, Large
@@ -18,7 +18,7 @@ public class V8_CreateProductSizeTable implements Migration{
             """;
 
         try(Statement statement = connection.createStatement()){
-            statement.execute(sql);
+            statement.execute(query);
         }
     }
 

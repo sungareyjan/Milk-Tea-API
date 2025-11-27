@@ -12,10 +12,10 @@ public class DBConnection {
     public static Connection getConnection() {
         try {
             if (connection == null || connection.isClosed()) {
-                final String HOST = Env.get("DB_HOST", "localhost");
+                final String HOST = Env.get("DB_HOST", "127.0.0.1");
                 final String PORT = Env.get("DB_PORT", "3306");
-                final String DATA_BASE_NAME = Env.get("DB_NAME", "milktea_db");
-                final String USERNAME = Env.get("DB_USER", "root");
+                final String DATA_BASE_NAME = Env.get("DB_NAME", "forge");
+                final String USERNAME = Env.get("DB_USER", "forge");
                 final String PASSWORD = Env.get("DB_PASS", "");
 
                 String url = String.format("jdbc:mysql://%s:%s/%s?useSSL=false&serverTimezone=UTC", HOST, PORT, DATA_BASE_NAME);

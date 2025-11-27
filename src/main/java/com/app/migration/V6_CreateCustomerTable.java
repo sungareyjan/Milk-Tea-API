@@ -7,7 +7,7 @@ import java.sql.Statement;
 public class V6_CreateCustomerTable implements Migration {
     @Override
     public void run(Connection connection) throws SQLException {
-        String sql = """
+        String query = """
         CREATE TABLE IF NOT EXISTS customers (
             id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,   -- internal reference
             public_id CHAR(50) NOT NULL UNIQUE,              -- UUID for external use
@@ -37,7 +37,7 @@ public class V6_CreateCustomerTable implements Migration {
         """;
 
         try (Statement statement = connection.createStatement()) {
-            statement.execute(sql);
+            statement.execute(query);
         }
     }
 

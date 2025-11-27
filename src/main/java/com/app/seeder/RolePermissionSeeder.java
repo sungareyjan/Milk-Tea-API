@@ -8,11 +8,11 @@ import java.sql.SQLException;
 public class RolePermissionSeeder implements Seeder {
 
     private static long getRoleId(Connection conn, String roleName) throws SQLException {
-        try (PreparedStatement stmt = conn.prepareStatement(
+        try (PreparedStatement preparedStatement = conn.prepareStatement(
                 "SELECT id FROM roles WHERE name = ? LIMIT 1"
         )) {
-            stmt.setString(1, roleName);
-            try (ResultSet rs = stmt.executeQuery()) {
+            preparedStatement.setString(1, roleName);
+            try (ResultSet rs = preparedStatement.executeQuery()) {
                 if (!rs.next()) {
                     throw new RuntimeException("Role not found: " + roleName);
                 }

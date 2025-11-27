@@ -14,14 +14,14 @@ public class ProductCategorySeeder implements Seeder{
                 {"Specialty", "Premium signature drinks"}
         };
 
-        String sql = "INSERT IGNORE INTO product_categories (name, description) VALUES (?, ?)";
+        String query = "INSERT IGNORE INTO product_categories (name, description) VALUES (?, ?)";
 
-        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
 
             for (String[] perm : categories) {
-                stmt.setString(1, perm[0]);
-                stmt.setString(2, perm[1]);
-                stmt.executeUpdate();
+                preparedStatement.setString(1, perm[0]);
+                preparedStatement.setString(2, perm[1]);
+                preparedStatement.executeUpdate();
             }
 
             System.out.println("Categories seeded.");
