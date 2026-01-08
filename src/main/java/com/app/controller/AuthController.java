@@ -14,21 +14,21 @@ public class AuthController {
     }
 
     // --- Javalin route handler ---
-    public void login(Context ctx) {
+    public void login(Context context) {
         try {
-            String username = ctx.formParam("username");
-            String password = ctx.formParam("password");
+            String username = context.formParam("username");
+            String password = context.formParam("password");
 
             String token = authService.login(username, password);
-            ctx.status(200).json("{\"token\":\"" + token + "\"}");
+            context.status(200).json("{\"token\":\"" + token + "\"}");
         } catch (Exception e) {
-            ctx.status(400).json("{\"error\":\"" + e.getMessage() + "\"}");
+            context.status(400).json("{\"error\":\"" + e.getMessage() + "\"}");
         }
     }
 
-    public void logout(Context ctx) {
+    public void logout(Context context) {
         // Client can just remove token
-        ctx.status(200).json("{\"message\":\"Logged out\"}");
+        context.status(200).json("{\"message\":\"Logged out\"}");
     }
 
 }

@@ -18,8 +18,8 @@ public class DBConnection {
                 final String USERNAME = Env.get("DB_USER", "forge");
                 final String PASSWORD = Env.get("DB_PASS", "");
 
-                String url = String.format("jdbc:mysql://%s:%s/%s?useSSL=false&serverTimezone=UTC", HOST, PORT, DATA_BASE_NAME);
-                connection = DriverManager.getConnection(url, USERNAME, PASSWORD);
+                final String URL = String.format("jdbc:mysql://%s:%s/%s?useSSL=false&serverTimezone=UTC", HOST, PORT, DATA_BASE_NAME);
+                connection = DriverManager.getConnection(URL, USERNAME, PASSWORD);
                 System.out.println("Database Connection Success");
             }
         } catch (Exception e) {

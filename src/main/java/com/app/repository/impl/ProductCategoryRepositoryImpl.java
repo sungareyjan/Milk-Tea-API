@@ -1,14 +1,14 @@
-package com.app.repository.productcategory;
+package com.app.repository.impl;
 
 import com.app.model.ProductCategory;
 
 import java.sql.SQLException;
 import java.util.List;
 
-public interface ProductCategoryRepository {
+public interface ProductCategoryRepositoryImpl {
     List<ProductCategory> findAll() throws SQLException;
     ProductCategory findById(int id) throws SQLException;
-    void save(ProductCategory category) throws SQLException;
+    ProductCategory save(ProductCategory category) throws SQLException;
     void update(ProductCategory category) throws SQLException;
-    void delete(int id) throws SQLException;
+    boolean softDelete(int id) throws SQLException;
 }

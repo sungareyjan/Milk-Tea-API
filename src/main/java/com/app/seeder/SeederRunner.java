@@ -1,6 +1,7 @@
 package com.app.seeder;
 
 import com.app.database.DBConnection;
+import com.app.seed.MerchantSeeder;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -19,7 +20,8 @@ public class SeederRunner {
                     new ProductSizeSeeder(),
                     new ProductCategorySeeder(),
                     new ProductSeeder(),
-                    new RolePermissionSeeder()
+                    new RolePermissionSeeder(),
+                    new MerchantSeeder()
             );
 
             for (Seeder seeder : seeders) {

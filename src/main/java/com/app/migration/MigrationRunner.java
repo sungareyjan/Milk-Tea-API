@@ -22,7 +22,12 @@ public class MigrationRunner {
                 new V11_CreateOderItemTable(),
                 new V12_CreatePaymentMethodTable(),
                 new V13_CreatePaymentTable(),
-                new V14_CreateAuditLogTable()
+                new V14_CreateAuditLogTable(),
+                new V15_AddUniqueConstrainToProducts(),
+                new V16_CreateCustomerAddressTable(),
+                new V17_CreateDeliveriesTable(),
+                new V18_AddOrderPricingColumns(),
+                new V19_CreateMerchantsTable()
                 // Add more here in the future
         );
 
