@@ -43,3 +43,4 @@ replay_pid*
 
 # Snyk Security Extension - AI Rules (auto-generated)
 .github/instructions/snyk_rules.instructions.md
+src/main/java/com/app/repository/ProductCategoryRepository.java

@@ -1,15 +1,17 @@
 package com.app;
 
-import com.app.controller.AuthController;
-import com.app.controller.ProductCategoryController;
+import com.app.config.Env;
+import com.app.controller.*;
 import com.app.database.DBConnection;
+import com.app.exception.GlobalExceptionHandler;
 import com.app.middleware.AuthMiddleware;
-import com.app.repository.AuthRepositoryImplementation;
-import com.app.repository.productcategory.ProductCategoryRepositoryImplementation;
-import com.app.service.AuthService;
+import com.app.middleware.RoleMiddleware;
+import com.app.model.enums.Role;
+import com.app.repository.*;
+import com.app.routes.*;
+import com.app.service.*;
 import com.app.migration.MigrationRunner;
 import com.app.seeder.SeederRunner;
-import com.app.service.ProductCategoryService;
 import io.javalin.Javalin;
 
 import java.sql.Connection;
@@ -29,35 +31,34 @@ public class ApplicationContext {
                 config.http.defaultContentType = "application/json";
             });
 
+            GlobalExceptionHandler.register(app);
+
             // --- AUTH ROUTES ---
             app.before("/api/*", AuthMiddleware::protectRoute);
-
-            AuthRepositoryImplementation authRepository = new AuthRepositoryImplementation(connection);
-            AuthService authService = new AuthService(authRepository);
-            AuthController authController = new AuthController(authService);
-
-            // Public routes
-            app.post("/login", authController::login);
-            app.post("/logout", authController::logout);
-
-            // Sample route
-            app.get("/api/hello", ctx -> {
-                ctx.result("Hello World!");
+            // Sample route for api route check
+            app.get("/api/hello", context -> {
+                context.result("Hello World!");
             });
 
-            ProductCategoryRepositoryImplementation categoryRepo = new ProductCategoryRepositoryImplementation(connection);
-            ProductCategoryService categoryService = new ProductCategoryService(categoryRepo);
-            ProductCategoryController categoryController = new ProductCategoryController(categoryService);
+            // --- Register Routes ---
+            AuthController authController = new AuthController(new AuthService(new AuthRepository(connection)));
+            new AuthRoutes(authController).routes(app);
 
-            // Product category routes
-            app.get("/api/product-categories", categoryController::getAll);
-            app.get("/api/product-categories/{id}", categoryController::getById);
-            app.post("/api/product-categories", categoryController::create);
-            app.put("/api/product-categories/{id}", categoryController::update);
-            app.delete("/api/product-categories/{id}", categoryController::delete);
+            UserController userController = new UserController(new UserService(new UserRepository(connection)));
+            new UserRoutes(userController).routes(app);
 
-            // Start server
-            app.start(8000);
+            ProductCategoryController categoryController = new ProductCategoryController(new ProductCategoryService(new ProductCategoryRepository(connection)));
+            new ProductCategoryRoutes(categoryController).routes(app);
+
+            ProductController productController = new ProductController(new ProductService(new ProductRepository(connection)));
+            new ProductRoutes(productController).routes(app);
+
+            CustomerController customerController = new CustomerController(new CustomerService(new CustomerRepository(connection)));
+            new CustomerRoutes(customerController).routes(app);
+
+            OrderController orderController = new OrderController(new OrderService(new OrderRepository(connection)));
+            new OrderRoutes(orderController).routes(app);
+            app.start(Integer.parseInt(Env.get("PORT", "8000")));
 
         } catch (Exception e) {
             e.printStackTrace();

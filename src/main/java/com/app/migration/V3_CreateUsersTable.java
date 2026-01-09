@@ -18,6 +18,7 @@ public class V3_CreateUsersTable implements Migration {
             middle_name VARCHAR(50),
             last_name VARCHAR(50) NOT NULL,
             email VARCHAR(100) NOT NULL UNIQUE,
+            status TINYINT(1) NOT NULL DEFAULT 1 COMMENT '1=active,0=deactivated',
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
             
