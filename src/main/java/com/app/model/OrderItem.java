@@ -12,14 +12,21 @@ public class OrderItem {
     private long id;
     @JsonIgnore
     private long orderId;
+
     private long productId;
+
+    // SNAPSHOT DATA
+    private String productName;
+    private String productDescription;
+    private String productCategory;
+    private String productCategoryDescription;
 
     private int quantity;
     private BigDecimal unitPrice;
     private BigDecimal subtotal;
 
     private Size size;
-    private String unit; //ml-gram
+    private String unit;
     private BigDecimal measurement;
 
 //    private LocalDateTime createdAt;

@@ -140,45 +140,6 @@ public class ProductRepository implements ProductRepositoryImpl {
     }
 
     @Override
-//    public Product create(Product product) {
-//        String sql = """
-//        INSERT INTO products
-//        (name, description, category_id, size_id, price, availability)
-//        VALUES (?, ?, ?, ?, ?, ?)
-//    """;
-//
-//        try (PreparedStatement ps = connection.prepareStatement(
-//                sql, Statement.RETURN_GENERATED_KEYS)) {
-//
-//            ps.setString(1, product.getName());
-//            ps.setString(2, product.getDescription());
-//            ps.setLong(3, product.getCategoryId());
-//            ps.setLong(4, product.getSizeId());
-//            ps.setDouble(5, product.getPrice());
-//            ps.setBoolean(6, product.isAvailability());
-//
-//            ps.executeUpdate();
-//
-//            try (ResultSet rs = ps.getGeneratedKeys()) {
-//                if (rs.next()) {
-//                    product.setId(rs.getLong(1));
-//                }
-//            }
-//            return product;
-//
-//        } catch (SQLIntegrityConstraintViolationException e) {
-//
-//            // ✅ Detect your UNIQUE constraint
-//            if (e.getMessage().contains("uk_products_name_size")) {
-//                throw new DuplicateResourceException(
-//                        "Product '" + product.getName() + "' with the same size already exists."
-//                );
-//            }
-//
-//            // other FK / constraint errors
-//            throw new RuntimeException("Failed to create product", e);
-//        }
-//    }
     public Product create(Product product) {
         String sql = """
                 INSERT INTO products

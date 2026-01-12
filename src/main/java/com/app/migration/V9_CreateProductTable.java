@@ -11,7 +11,7 @@ public class V9_CreateProductTable implements Migration {
             CREATE TABLE IF NOT EXISTS products (
                 id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
                 name VARCHAR(100) NOT NULL,
-                description VARCHAR(255),
+                description TEXT,
                 category_id BIGINT UNSIGNED NOT NULL,
                 size_id BIGINT UNSIGNED NOT NULL,
                 price DECIMAL(10,2) NOT NULL,

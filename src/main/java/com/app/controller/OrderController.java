@@ -1,8 +1,9 @@
 package com.app.controller;
 
+import com.app.model.Merchant;
 import com.app.model.Order;
-import com.app.model.StatusRequest;
 import com.app.model.enums.OrderStatus;
+import com.app.service.MerchantService;
 import com.app.service.OrderService;
 import io.javalin.http.Context;
 
@@ -11,23 +12,28 @@ import java.util.Map;
 
 public class OrderController {
 
-    private final OrderService service;
+    private final OrderService orderService;
+    private final MerchantService merchantService;
 
-    public OrderController(OrderService service) {
-        this.service = service;
+    public OrderController(OrderService orderService, MerchantService merchantService) {
+        this.orderService = orderService;
+        this.merchantService = merchantService;
     }
 
-    // Create new order
     public void create(Context ctx) {
         Order order = ctx.bodyAsClass(Order.class);
-        Order created = service.create(order);
-        ctx.status(201).json(created);
+
+        Order saved = orderService.create(order);
+        Merchant merchant = merchantService.getDefault();
+
+        ctx.json(orderService.buildReceipt(saved, merchant));
     }
+
 
     // Get single order by public ID
     public void getByPublicId(Context ctx) {
         String publicId = ctx.pathParam("public_id");
-        Order order = service.findByPublicId(publicId);
+        Order order = orderService.findByPublicId(publicId);
         if (order == null) {
             ctx.status(404).result("Order not found");
         } else {
@@ -37,7 +43,7 @@ public class OrderController {
 
     // Get all orders
     public void getAll(Context ctx) {
-        List<Order> orders = service.findAll();
+        List<Order> orders = orderService.findAll();
         ctx.json(orders);
     }
 
@@ -61,7 +67,7 @@ public class OrderController {
             return;
         }
 
-        Order updated = service.updateStatus(publicId, status);
+        Order updated = orderService.updateStatus(publicId, status);
         if (updated == null) {
             ctx.status(404).result("Order not found");
         } else {

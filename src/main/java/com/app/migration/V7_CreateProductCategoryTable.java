@@ -11,8 +11,8 @@ public class V7_CreateProductCategoryTable implements  Migration{
         String query = """
             CREATE TABLE IF NOT EXISTS product_categories (
                 id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-                name VARCHAR(100) NOT NULL UNIQUE,
-                description VARCHAR(255),
+                name VARCHAR(255) NOT NULL UNIQUE,
+                description TEXT,
                 deleted TINYINT(1) NOT NULL DEFAULT 0 COMMENT '1=true,0=false',
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP

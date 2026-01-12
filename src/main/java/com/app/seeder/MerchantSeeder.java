@@ -18,7 +18,7 @@ public class MerchantSeeder implements Seeder {
 
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setString(1, UUID.randomUUID().toString());
-            stmt.setString(2, "RJ codes Milk Tea");
+            stmt.setString(2, "RJ Codes Elit Milk Tea");
             stmt.setString(3, "San Fernando, Pampanga");
             stmt.setString(4, "123 Main Street, San Fernando, Pampanga");
             stmt.setString(5, "0917-123-4567");

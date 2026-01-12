@@ -56,8 +56,18 @@ public class ApplicationContext {
             CustomerController customerController = new CustomerController(new CustomerService(new CustomerRepository(connection)));
             new CustomerRoutes(customerController).routes(app);
 
-            OrderController orderController = new OrderController(new OrderService(new OrderRepository(connection)));
+            // --- MERCHANT ---
+            MerchantRepository merchantRepository = new MerchantRepository(connection);
+            MerchantService merchantService = new MerchantService(merchantRepository);
+
+            // --- ORDER ---
+            OrderRepository orderRepository = new OrderRepository(connection);
+            OrderService orderService = new OrderService(orderRepository);
+
+            OrderController orderController = new OrderController(orderService, merchantService);
+
             new OrderRoutes(orderController).routes(app);
+
             app.start(Integer.parseInt(Env.get("PORT", "8000")));
 
         } catch (Exception e) {

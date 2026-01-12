@@ -16,9 +16,10 @@ public class V11_CreateOderItemTable implements Migration {
                 product_id BIGINT UNSIGNED NOT NULL,
 
                 -- SNAPSHOT fields (receipt-safe)
-                product_name VARCHAR(150) NOT NULL,
-                product_description TEXT,
-                category_name VARCHAR(100),
+                product_name VARCHAR(255) NOT NULL,
+                    product_description TEXT,
+                category_name VARCHAR(255),
+                category_description TEXT,
 
                 size VARCHAR(20),
                 unit VARCHAR(20),          -- ml, g, oz
