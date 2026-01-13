@@ -46,45 +46,44 @@ public class OrderService implements OrderServiceImpl {
         Map<String, Object> receipt = new HashMap<>();
 
         receipt.put("order", Map.of(
-                "publicId", order.getPublicId(),
-                "status", order.getStatus().name(),
-                "createdAt", order.getCreatedAt(),
-                "customer", Map.of(
-                        "publicCustomerId", order.getPublicCustomerId()
-                )
+            "publicId", order.getPublicId(),
+            "status", order.getStatus().name(),
+            "createdAt", order.getCreatedAt(),
+            "customer", Map.of("publicCustomerId", order.getPublicCustomerId()
+            )
         ));
 
         receipt.put("items", order.getItems().stream()
-                .map(item -> Map.of(
-                        "name", item.getProductName(),
-                        "quantity", item.getQuantity(),
-                        "unitPrice", item.getUnitPrice(),
-                        "subtotal", item.getSubtotal()
-                ))
-                .toList()
+            .map(item -> Map.of(
+                "name", item.getProductName(),
+                "quantity", item.getQuantity(),
+                "unitPrice", item.getUnitPrice(),
+                "subtotal", item.getSubtotal()
+            ))
+            .toList()
         );
 
         receipt.put("pricing", Map.of(
-                "itemsSubtotal", order.getItemsSubtotal(),
-                "deliveryFee", order.getDeliveryFee(),
-                "serviceFee", order.getServiceFee(),
-                "discount", order.getDiscount(),
-                "totalAmount", order.getTotalAmount()
+            "deliveryFee", order.getDeliveryFee(),
+            "serviceFee", order.getServiceFee(),
+            "discount", order.getDiscount(),
+            "totalAmount", order.getTotalAmount()
         ));
 
         Payment payment = order.getPayment();
         receipt.put("payment", Map.of(
-                "method", payment != null ? payment.getMethod().name() : "CASH",
-                "status", payment != null ? payment.getStatus().name() : "PENDING"
+            "method", payment != null ? payment.getPaymentMethodName() : "CASH",
+            "description", payment != null ? payment.getPaymentMethodDescription() : "",
+            "status", payment != null ? payment.getStatus().name() : "PENDING"
         ));
 
+
         receipt.put("merchant", Map.of(
-                "name", merchant.getName(),
-                "branch", merchant.getBranch()
+            "name", merchant.getName(),
+            "branch", merchant.getBranch()
         ));
 
         return receipt;
     }
-
 
 }

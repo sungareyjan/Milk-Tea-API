@@ -26,11 +26,17 @@ public class Order {
     private LocalDateTime createdAt;
 
     // pricing
-    private BigDecimal itemsSubtotal;
-    private BigDecimal deliveryFee;
-    private BigDecimal serviceFee;
-    private BigDecimal discount;
-    private BigDecimal totalAmount;
+    @Builder.Default
+    private BigDecimal deliveryFee = BigDecimal.ZERO;
+
+    @Builder.Default
+    private BigDecimal serviceFee = BigDecimal.ZERO;
+
+    @Builder.Default
+    private BigDecimal discount = BigDecimal.ZERO;
+
+    @Builder.Default
+    private BigDecimal totalAmount = BigDecimal.ZERO;
 
 //    private LocalDateTime updatedAt;
     private List<OrderItem> items;

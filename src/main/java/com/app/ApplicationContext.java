@@ -65,8 +65,10 @@ public class ApplicationContext {
             OrderService orderService = new OrderService(orderRepository);
 
             OrderController orderController = new OrderController(orderService, merchantService);
-
             new OrderRoutes(orderController).routes(app);
+
+            PaymentController paymentController = new PaymentController(new PaymentService(new PaymentRepository(connection)));
+            new PaymentRoutes(paymentController).routes(app);
 
             app.start(Integer.parseInt(Env.get("PORT", "8000")));
 

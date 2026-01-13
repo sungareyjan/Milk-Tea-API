@@ -26,27 +26,23 @@ public class OrderRepository implements OrderRepositoryImpl {
     public Order create(Order order) {
         String orderSql = """
             INSERT INTO orders
-            (public_id, public_customer_id, created_by, status, total_amount, created_at)
-            VALUES (?, ?, ?, ?, ?, ?)
+            (public_id, public_customer_id, created_by, status,delivery_fee,service_fee,discount, total_amount, created_at)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
         """;
 
         String itemSql = """
-            INSERT INTO order_items
-            (order_id, product_id, product_name, quantity, unit_price, subtotal, size, unit, measurement)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-        """;
+        INSERT INTO order_items
+        (order_id, product_id, product_name, product_description,
+            category_name, category_description,
+            quantity, unit_price, subtotal, size, unit, measurement)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    """;
 
         try {
             connection.setAutoCommit(false);
 
-            // ---------- CALCULATE SUBTOTALS & TOTAL ----------
-            BigDecimal totalAmount = BigDecimal.ZERO;
-            for (OrderItem item : order.getItems()) {
-                BigDecimal subtotal = item.getUnitPrice().multiply(BigDecimal.valueOf(item.getQuantity()));
-                item.setSubtotal(subtotal);
-                totalAmount = totalAmount.add(subtotal);
-            }
-            order.setTotalAmount(totalAmount);
+            // Use totalAmount and subtotals directly from frontend JSON
+            BigDecimal totalAmount = order.getTotalAmount();
 
             // ---------- INSERT ORDER ----------
             String publicId = UUID.randomUUID().toString();
@@ -55,8 +51,11 @@ public class OrderRepository implements OrderRepositoryImpl {
                 ps.setString(2, order.getPublicCustomerId());
                 ps.setString(3, order.getCreatedBy());
                 ps.setString(4, OrderStatus.PENDING.name());
-                ps.setBigDecimal(5, totalAmount);
-                ps.setTimestamp(6, Timestamp.valueOf(LocalDateTime.now()));
+                ps.setBigDecimal(5, order.getDeliveryFee());
+                ps.setBigDecimal(6, order.getServiceFee());
+                ps.setBigDecimal(7, order.getDiscount());
+                ps.setBigDecimal(8, totalAmount);
+                ps.setTimestamp(9, Timestamp.valueOf(LocalDateTime.now()));
 
                 ps.executeUpdate();
 
@@ -76,12 +75,15 @@ public class OrderRepository implements OrderRepositoryImpl {
                     ps.setLong(1, order.getId());
                     ps.setLong(2, item.getProductId());
                     ps.setString(3, item.getProductName());
-                    ps.setInt(4, item.getQuantity());
-                    ps.setBigDecimal(5, item.getUnitPrice());
-                    ps.setBigDecimal(6, item.getSubtotal());
-                    ps.setString(7, item.getSize() != null ? item.getSize().name() : Size.LARGE.name());
-                    ps.setString(8, item.getUnit());
-                    ps.setBigDecimal(9, item.getMeasurement());
+                    ps.setString(4, item.getProductDescription());
+                    ps.setString(5, item.getProductCategory());
+                    ps.setString(6, item.getProductCategoryDescription());
+                    ps.setInt(7, item.getQuantity());
+                    ps.setBigDecimal(8, item.getUnitPrice());
+                    ps.setBigDecimal(9, item.getSubtotal()); // already computed
+                    ps.setString(10, item.getSize().name());
+                    ps.setString(11, item.getUnit());
+                    ps.setBigDecimal(12, item.getMeasurement());
                     ps.addBatch();
                 }
                 ps.executeBatch();
