@@ -1,6 +1,7 @@
 package com.app.model.enums;
 
 public enum OrderStatus {
+
     PENDING,
     PAID,
     CANCELLED,

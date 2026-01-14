@@ -1,7 +1,6 @@
 package com.app.controller;
 
 import com.app.model.Customer;
-import com.app.model.User;
 import com.app.service.CustomerService;
 import io.javalin.http.Context;
 
@@ -15,18 +14,18 @@ public class CustomerController {
         this.service = service;
     }
 
-    public void create(Context ctx) {
-        Customer customer = ctx.bodyAsClass(Customer.class);
-        ctx.status(201).json(service.create(customer));
+    public void createCustomer(Context context) {
+        Customer customer = context.bodyAsClass(Customer.class);
+        context.status(201).json(service.createCustomer(customer));
     }
 
-    public void getAll(Context ctx) {
-        ctx.json(service.getAll());
+    public void getAllCustomers(Context context) {
+        context.json(service.getAllCustomers());
     }
 
-    public void getCustomer(Context context) {
+    public void getCustomerById(Context context) {
         String publicId = context.pathParam("public_id");
-        Customer customer = service.findByPublicId(publicId);
+        Customer customer = service.findCustomerById(publicId);
         if (customer == null) {
             context.status(404).json(Map.of(
                 "message", "Customer not found"
@@ -36,20 +35,19 @@ public class CustomerController {
         context.json(customer);
     }
 
+    public void updateCustomer(Context context) {
 
-    public void update(Context ctx) {
-
-        String publicId = ctx.pathParam("public_id"); // String, NOT long
-        Customer customer = ctx.bodyAsClass(Customer.class);
-        Customer updated = service.update(publicId, customer);
+        String publicId = context.pathParam("public_id");
+        Customer customer = context.bodyAsClass(Customer.class);
+        Customer updated = service.updateCustomer(publicId, customer);
         if (updated == null) {
-            ctx.status(404).json(Map.of(
+            context.status(404).json(Map.of(
                "message", "Customer not found"
             ));
             return;
         }
 
-        ctx.json(updated);
+        context.json(updated);
     }
 
 }

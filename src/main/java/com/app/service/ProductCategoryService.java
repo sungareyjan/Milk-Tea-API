@@ -17,27 +17,27 @@ public class ProductCategoryService implements ProductCategoryServiceImpl {
 
     @Override
     public void createCategory(ProductCategory category) throws SQLException {
-        repository.save(category);
+        repository.insertProductCategory(category);
     }
 
     @Override
     public List<ProductCategory> getAllCategories() throws SQLException {
-        return repository.findAll();
+        return repository.findAllProductCategories();
     }
 
     @Override
     public ProductCategory getCategory(int id) throws SQLException {
-        return repository.findById(id);
+        return repository.findProductCategoryById(id);
     }
 
     @Override
     public void updateCategory(ProductCategory category) throws SQLException {
-        repository.update(category);
+        repository.updateProductCategory(category);
     }
 
     @Override
     public boolean softDeleteCategory(int id) throws SQLException {
-      return repository.softDelete(id);
+      return repository.softDeleteProductCategory(id);
     }
 
 }

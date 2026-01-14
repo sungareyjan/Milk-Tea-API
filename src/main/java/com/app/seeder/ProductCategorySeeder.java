@@ -9,9 +9,9 @@ public class ProductCategorySeeder implements Seeder{
     @Override
     public void run(Connection connection) throws SQLException {
         String[][] categories = {
-                {"Classic Milk Tea", "Traditional milk tea flavors"},
-                {"Fruit Tea", "Fresh fruit-infused teas"},
-                {"Specialty", "Premium signature drinks"}
+            {"Classic Milk Tea", "Traditional milk tea flavors"},
+            {"Fruit Tea", "Fresh fruit-infused teas"},
+            {"Specialty", "Premium signature drinks"}
         };
 
         String query = "INSERT IGNORE INTO product_categories (name, description) VALUES (?, ?)";

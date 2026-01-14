@@ -16,23 +16,23 @@ public class CustomerService implements CustomerServiceImpl {
     }
 
     @Override
-    public Customer create(Customer customer) {
+    public Customer createCustomer(Customer customer) {
         customer.setPublicId(UUID.randomUUID().toString());
-        return repository.create(customer);
+        return repository.insertCustomer(customer);
     }
 
     @Override
-    public Customer findByPublicId(String publicId) {
-        return repository.findByPublicId(publicId);
+    public Customer findCustomerById(String publicId) {
+        return repository.findCustomerById(publicId);
     }
 
     @Override
-    public List<Customer> getAll() {
-        return repository.findAll();
+    public List<Customer> getAllCustomers() {
+        return repository.findAllCustomers();
     }
 
     @Override
-    public Customer update(String publicId, Customer customer) {
-        return repository.update(publicId, customer);
+    public Customer updateCustomer(String publicId, Customer customer) {
+        return repository.updateCustomer(publicId, customer);
     }
 }

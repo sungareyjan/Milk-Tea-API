@@ -4,9 +4,10 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-public class V19_CreateMerchantsTable implements Migration {
+public class V18_CreateMerchantsTable implements Migration {
     @Override
     public void run(Connection connection) throws SQLException {
+
         String query = """
         CREATE TABLE IF NOT EXISTS merchants (
             id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,

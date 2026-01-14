@@ -10,9 +10,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Merchant {
-    private String publicId;       // matches merchants.public_id
-    private String name;           // merchant name
+
+    private String publicId;
+    private String name;
     private String branch;         // branch location
-    private String address;        // full address
-    private String contactNumber;  // contact phone number
+    private String address;
+    private String contactNumber;
+
 }

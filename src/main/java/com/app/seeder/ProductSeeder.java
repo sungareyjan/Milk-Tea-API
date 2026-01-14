@@ -12,14 +12,13 @@ public class ProductSeeder implements Seeder {
         System.out.println("➡ Seeding products...");
 
         Object[][] products = {
-                {"Classic Pearl Milk Tea", "Black tea with milk and pearls", 1, 2, 120.00, 1},
-                {"Taro Milk Tea", "Purple taro milk tea with pearls", 1, 3, 140.00, 1},
-                {"Mango Fruit Tea", "Fresh mango with green tea", 2, 2, 130.00, 1},
-                {"Strawberry Fruit Tea", "Strawberry fruit tea", 2, 1, 120.00, 1},
-                {"Matcha Latte", "Premium matcha milk tea", 3, 2, 150.00, 1},
-                {"Brown Sugar Boba Milk", "Brown sugar pearls with fresh milk", 3, 3, 160.00, 1}
+            {"Classic Pearl Milk Tea", "Black tea with milk and pearls", 1, 2, 120.00, 1},
+            {"Taro Milk Tea", "Purple taro milk tea with pearls", 1, 3, 140.00, 1},
+            {"Mango Fruit Tea", "Fresh mango with green tea", 2, 2, 130.00, 1},
+            {"Strawberry Fruit Tea", "Strawberry fruit tea", 2, 1, 120.00, 1},
+            {"Matcha Latte", "Premium matcha milk tea", 3, 2, 150.00, 1},
+            {"Brown Sugar Boba Milk", "Brown sugar pearls with fresh milk", 3, 3, 160.00, 1}
         };
-
 
         String checkSql = "SELECT id FROM products WHERE name = ? LIMIT 1";
 

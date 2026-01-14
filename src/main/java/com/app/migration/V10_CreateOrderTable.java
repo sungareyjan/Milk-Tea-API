@@ -7,6 +7,7 @@ import java.sql.Statement;
 public class V10_CreateOrderTable implements Migration {
     @Override
     public void run(Connection connection) throws SQLException {
+
         String query = """
         CREATE TABLE IF NOT EXISTS orders (
             id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,

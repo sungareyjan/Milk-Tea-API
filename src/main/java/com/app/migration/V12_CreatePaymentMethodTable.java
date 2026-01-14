@@ -8,6 +8,7 @@ public class V12_CreatePaymentMethodTable implements Migration {
 
     @Override
     public void run(Connection connection) throws SQLException {
+
         String query = """
          CREATE TABLE IF NOT EXISTS payment_methods (
              id TINYINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
@@ -17,6 +18,7 @@ public class V12_CreatePaymentMethodTable implements Migration {
              updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
          );
          """;
+
         try(Statement statement = connection.createStatement()){
             statement.execute(query);
         }

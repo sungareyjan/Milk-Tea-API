@@ -25,9 +25,8 @@ public class MigrationRunner {
                 new V14_CreateAuditLogTable(),
                 new V15_AddUniqueConstrainToProducts(),
                 new V16_CreateCustomerAddressTable(),
-                new V17_CreateDeliveriesTable(),
-                new V18_AddOrderPricingColumns(),
-                new V19_CreateMerchantsTable()
+                new V17_AddOrderPricingColumns(),
+                new V18_CreateMerchantsTable()
                 // Add more here in the future
         );
 
@@ -39,11 +38,11 @@ public class MigrationRunner {
 
             // Create migrations table if not exists , same on laravel
             statement.execute("""
-                CREATE TABLE IF NOT EXISTS migrations (
-                    id INT AUTO_INCREMENT PRIMARY KEY,
-                    migration VARCHAR(255) NOT NULL UNIQUE,
-                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-                );
+            CREATE TABLE IF NOT EXISTS migrations (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                migration VARCHAR(255) NOT NULL UNIQUE,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            );
             """);
 
             for (Migration migration : migrations) {

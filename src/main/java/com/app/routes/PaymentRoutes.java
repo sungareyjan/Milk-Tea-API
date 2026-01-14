@@ -14,12 +14,12 @@ public class PaymentRoutes {
     }
 
     public void routes(Javalin app) {
-
         // Middleware for role checking
-        app.before("/api/payments/*", ctx -> RoleMiddleware.allow(ctx, Role.ADMIN));
+        app.before("/api/payments/*", context -> RoleMiddleware.allow(context, Role.ADMIN));
 
-        app.post("/api/payments", paymentController::create);
-        app.get("/api/payments/{publicId}", paymentController::getByPublicId);
-        app.patch("/api/payments/{publicId}/status", paymentController::updateStatus);
+        // Routes
+        app.post("/api/payments", paymentController::createPayment);
+        app.get("/api/payments/{publicId}", paymentController::getPaymentById);
+        app.patch("/api/payments/{publicId}/status", paymentController::updatePaymentStatus);
     }
 }

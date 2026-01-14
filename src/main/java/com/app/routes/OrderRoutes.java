@@ -1,6 +1,8 @@
 package com.app.routes;
 
 import com.app.controller.OrderController;
+import com.app.middleware.RoleMiddleware;
+import com.app.model.enums.Role;
 import io.javalin.Javalin;
 
 public class OrderRoutes {
@@ -12,9 +14,14 @@ public class OrderRoutes {
     }
 
     public void routes(Javalin app) {
-        app.post("/api/orders", orderController::create);
-        app.get("/api/orders", orderController::getAll);
-        app.get("/api/orders/{public_id}", orderController::getByPublicId);
-        app.patch("/api/orders/{public_id}/status", orderController::updateStatus);
+
+        // Middleware for role checking
+        app.before("/api/orders/*", context -> RoleMiddleware.allow(context, Role.ADMIN));
+
+        // Routes
+        app.post("/api/orders", orderController::createOrder);
+        app.get("/api/orders", orderController::getAllOrders);
+        app.get("/api/orders/{public_id}", orderController::getOrderById);
+        app.patch("/api/orders/{public_id}/status", orderController::updateOrderStatus);
     }
 }

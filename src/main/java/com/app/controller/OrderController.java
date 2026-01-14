@@ -20,42 +20,42 @@ public class OrderController {
         this.merchantService = merchantService;
     }
 
-    public void create(Context ctx) {
-        Order order = ctx.bodyAsClass(Order.class);
+    // Create Order
+    public void createOrder(Context context) {
+        Order order = context.bodyAsClass(Order.class);
 
-        Order saved = orderService.create(order);
+        Order saved = orderService.createOrder(order);
         Merchant merchant = merchantService.getDefault();
 
-        ctx.json(orderService.buildReceipt(saved, merchant));
+        context.json(orderService.buildReceipt(saved, merchant));
     }
 
-
     // Get single order by public ID
-    public void getByPublicId(Context ctx) {
-        String publicId = ctx.pathParam("public_id");
-        Order order = orderService.findByPublicId(publicId);
+    public void getOrderById(Context context) {
+        String publicId = context.pathParam("public_id");
+        Order order = orderService.findOrderById(publicId);
         if (order == null) {
-            ctx.status(404).result("Order not found");
+            context.status(404).result("Order not found");
         } else {
-            ctx.json(order);
+            context.json(order);
         }
     }
 
     // Get all orders
-    public void getAll(Context ctx) {
-        List<Order> orders = orderService.findAll();
-        ctx.json(orders);
+    public void getAllOrders(Context context) {
+        List<Order> orders = orderService.findAllOrders();
+        context.json(orders);
     }
 
-    public void updateStatus(Context ctx) {
-        String publicId = ctx.pathParam("public_id");
+    public void updateOrderStatus(Context context) {
+        String publicId = context.pathParam("public_id");
 
         // Get status from request body as a simple JSON string, e.g., { "status": "PAID" }
-        Map<String, String> body = ctx.bodyAsClass(Map.class);
+        Map<String, String> body = context.bodyAsClass(Map.class);
         String statusStr = body.get("status");
 
         if (statusStr == null) {
-            ctx.status(400).result("Missing 'status' in request body");
+            context.status(400).result("Missing 'status' in request body");
             return;
         }
 
@@ -63,15 +63,15 @@ public class OrderController {
         try {
             status = OrderStatus.valueOf(statusStr.toUpperCase());
         } catch (IllegalArgumentException e) {
-            ctx.status(400).result("Invalid order status: " + statusStr);
+            context.status(400).result("Invalid order status: " + statusStr);
             return;
         }
 
-        Order updated = orderService.updateStatus(publicId, status);
+        Order updated = orderService.updateOrderStatus(publicId, status);
         if (updated == null) {
-            ctx.status(404).result("Order not found");
+            context.status(404).result("Order not found");
         } else {
-            ctx.json(updated); // directly return the model
+            context.json(updated);
         }
     }
 

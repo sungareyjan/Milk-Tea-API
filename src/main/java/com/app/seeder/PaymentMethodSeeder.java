@@ -10,10 +10,10 @@ public class PaymentMethodSeeder implements Seeder {
     public void run(Connection connection) throws SQLException {
 
         String[][] methods = {
-                {"Cash", "Cash transaction"},
-                {"Maya", "Maya e-wallet"},
-                {"GCash", "GCash digital payment"},
-                {"Card", "Credit/Debit card payment"},
+            {"Cash", "Cash transaction"},
+            {"Maya", "Maya e-wallet"},
+            {"GCash", "GCash digital payment"},
+            {"Card", "Credit/Debit card payment"},
         };
 
         String query = "INSERT IGNORE INTO payment_methods (name, description) VALUES (?, ?)";

@@ -13,11 +13,11 @@ public class ProductCategoryController {
         this.productCategoryService = service;
     }
 
-    public void getAll(Context context) throws SQLException {
+    public void getAllProductCategories(Context context) throws SQLException {
         context.json(productCategoryService.getAllCategories());
     }
 
-    public void getById(Context context) throws SQLException {
+    public void getProductCategoryById(Context context) throws SQLException {
         int id = Integer.parseInt(context.pathParam("id"));
         ProductCategory category = productCategoryService.getCategory(id);
         if (category != null) {
@@ -28,13 +28,13 @@ public class ProductCategoryController {
         }
     }
 
-    public void create(Context context) throws SQLException {
+    public void createProductCategory(Context context) throws SQLException {
         ProductCategory category = context.bodyAsClass(ProductCategory.class);
         productCategoryService.createCategory(category);
         context.status(201).json(category);
     }
 
-    public void update(Context context) throws SQLException {
+    public void updateProductCategory(Context context) throws SQLException {
         int id = Integer.parseInt(context.pathParam("id"));
         ProductCategory category = context.bodyAsClass(ProductCategory.class);
         category.setId(id);
@@ -42,7 +42,7 @@ public class ProductCategoryController {
         context.json(category);
     }
 
-    public void delete(Context context) {
+    public void softDeleteProductCategory(Context context) {
         try {
             int id = Integer.parseInt(context.pathParam("id"));
             if (productCategoryService.softDeleteCategory(id)) {

@@ -9,16 +9,16 @@ public class PermissionSeeder implements Seeder {
     @Override
     public void run(Connection connection) throws SQLException {
         String[][] permissions = {
-                {"create_order", "Permission to create a new order"},
-                {"view_orders", "Permission to view all orders"},
-                {"update_order_status", "Permission to update order status"},
-                {"cancel_order", "Permission to cancel an order"},
-                {"manage_users", "Permission to create/edit users"},
-                {"view_reports", "Permission to view sales reports"},
-                {"manage_roles", "Permission to assign roles"},
-                {"manage_permissions", "Permission to edit permissions"},
-                {"manage_products", "Permission to add/edit/delete products"},
-                {"manage_customers", "Permission to manage customer profiles"}
+            {"create_order", "Permission to create a new order"},
+            {"view_orders", "Permission to view all orders"},
+            {"update_order_status", "Permission to update order status"},
+            {"cancel_order", "Permission to cancel an order"},
+            {"manage_users", "Permission to create/edit users"},
+            {"view_reports", "Permission to view sales reports"},
+            {"manage_roles", "Permission to assign roles"},
+            {"manage_permissions", "Permission to edit permissions"},
+            {"manage_products", "Permission to add/edit/delete products"},
+            {"manage_customers", "Permission to manage customer profiles"}
         };
 
         String query = "INSERT IGNORE INTO permissions (name, description) VALUES (?, ?)";

@@ -18,16 +18,16 @@ public class UserRepository implements UserRepositoryImpl {
     public UserRepository(Connection connection){this.connection = connection;}
 
     @Override
-    public List<User> findAll() throws SQLException {
+    public List<User> findAllUsers() throws SQLException {
         List<User> users = new ArrayList<>();
         String query = """
-                SELECT users.public_id, users.username, users.password, roles.name as role FROM users 
-                JOIN user_roles ON users.id = user_roles.user_id
-                JOIN roles ON user_roles.role_id = roles.id 
-                """;
+            SELECT users.public_id, users.username, users.password, roles.name as role FROM users 
+            JOIN user_roles ON users.id = user_roles.user_id
+            JOIN roles ON user_roles.role_id = roles.id 
+        """;
 
-        try (PreparedStatement stmt = connection.prepareStatement(query);
-             ResultSet resultSet = stmt.executeQuery()) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query);
+             ResultSet resultSet = preparedStatement.executeQuery()) {
 
             while (resultSet.next()) {
                 users.add(new User(
@@ -44,25 +44,25 @@ public class UserRepository implements UserRepositoryImpl {
     }
 
     @Override
-    public User findById(String publicId) throws SQLException {
+    public User findUserById(String publicId) throws SQLException {
         String query = """
-        SELECT users.public_id, users.username, users.password, roles.name AS role
-        FROM users
-        JOIN user_roles ON users.id = user_roles.user_id
-        JOIN roles ON user_roles.role_id = roles.id
-        WHERE users.public_id = ?
-    """;
+            SELECT users.public_id, users.username, users.password, roles.name AS role
+            FROM users
+            JOIN user_roles ON users.id = user_roles.user_id
+            JOIN roles ON user_roles.role_id = roles.id
+            WHERE users.public_id = ?
+        """;
 
-        try (PreparedStatement stmt = connection.prepareStatement(query)) {
-            stmt.setString(1, publicId);  // set param BEFORE executing query
-            try (ResultSet rs = stmt.executeQuery()) {
-                if (rs.next()) {
-                    Role role = Role.valueOf(rs.getString("role").toUpperCase());
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setString(1, publicId);  // set param BEFORE executing query
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    Role role = Role.valueOf(resultSet.getString("role").toUpperCase());
                     return new User(
-                            rs.getString("public_id"),
-                            rs.getString("username"),
-                            rs.getString("password"),
-                            role
+                        resultSet.getString("public_id"),
+                        resultSet.getString("username"),
+                        resultSet.getString("password"),
+                        role
                     );
                 }
             }
@@ -72,7 +72,7 @@ public class UserRepository implements UserRepositoryImpl {
     }
 
     @Override
-    public User save(User user) throws SQLException {
+    public User insertUser(User user) throws SQLException {
         int userId;
         connection.setAutoCommit(false); // Start transaction
         String insertUser = """
@@ -123,7 +123,7 @@ public class UserRepository implements UserRepositoryImpl {
     }
 
     @Override
-    public void update(User user) throws SQLException {
+    public void updateUser(User user) throws SQLException {
         String query = """
         UPDATE users
         SET password = ?, first_name = ?, middle_name = ?, last_name = ?, email = ?
@@ -131,15 +131,15 @@ public class UserRepository implements UserRepositoryImpl {
     """;
 
         connection.setAutoCommit(false);
-        try (PreparedStatement stmt = connection.prepareStatement(query)) {
-            stmt.setString(1, user.getPassword());
-            stmt.setString(2, user.getFirstName());
-            stmt.setString(3, user.getMiddleName());
-            stmt.setString(4, user.getLastName());
-            stmt.setString(5, user.getEmail());
-            stmt.setString(6, user.getPublicId()); // important: where clause param
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setString(1, user.getPassword());
+            preparedStatement.setString(2, user.getFirstName());
+            preparedStatement.setString(3, user.getMiddleName());
+            preparedStatement.setString(4, user.getLastName());
+            preparedStatement.setString(5, user.getEmail());
+            preparedStatement.setString(6, user.getPublicId()); // important: where clause param
 
-            stmt.executeUpdate();
+            preparedStatement.executeUpdate();
             connection.commit();
         } catch (SQLException e) {
             connection.rollback(); // rollback on failure

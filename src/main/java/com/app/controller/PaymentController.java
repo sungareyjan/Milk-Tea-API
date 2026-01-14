@@ -13,37 +13,37 @@ public class PaymentController {
     }
 
     // Create a new payment
-    public void create(Context ctx) {
-        Payment payment = ctx.bodyAsClass(Payment.class);
-        Payment saved = service.create(payment);
-        ctx.json(saved).status(201);
+    public void createPayment(Context context) {
+        Payment payment = context.bodyAsClass(Payment.class);
+        Payment saved = service.createPayment(payment);
+        context.json(saved).status(201);
     }
 
     // Get payment by publicId
-    public void getByPublicId(Context ctx) {
-        String publicId = ctx.pathParam("publicId");
-        Payment payment = service.findByPublicId(publicId);
+    public void getPaymentById(Context context) {
+        String publicId = context.pathParam("publicId");
+        Payment payment = service.findPaymentById(publicId);
 
         if (payment == null) {
-            ctx.status(404).result("Payment not found");
+            context.status(404).result("Payment not found");
             return;
         }
 
-        ctx.json(payment);
+        context.json(payment);
     }
 
     // Update payment status
-    public void updateStatus(Context ctx) {
-        String publicId = ctx.pathParam("publicId");
-        Payment payment = ctx.bodyAsClass(Payment.class); // expects JSON { "status": "PAID" }
+    public void updatePaymentStatus(Context context) {
+        String publicId = context.pathParam("publicId");
+        Payment payment = context.bodyAsClass(Payment.class); // expects JSON { "status": "PAID" }
 
-        Payment updated = service.updateStatus(publicId, payment.getStatus().name());
+        Payment updated = service.updatePaymentStatus(publicId, payment.getStatus().name());
 
         if (updated == null) {
-            ctx.status(404).result("Payment not found");
+            context.status(404).result("Payment not found");
             return;
         }
 
-        ctx.json(updated);
+        context.json(updated);
     }
 }

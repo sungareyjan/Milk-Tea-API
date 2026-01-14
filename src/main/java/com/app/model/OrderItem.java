@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 
 @Data
 public class OrderItem {
+
     @JsonIgnore
     private long id;
     @JsonIgnore
@@ -15,7 +16,7 @@ public class OrderItem {
 
     private long productId;
 
-    // SNAPSHOT DATA
+    // SNAPSHOT DATA for data history record
     private String productName;
     private String productDescription;
     private String productCategory;
@@ -29,6 +30,6 @@ public class OrderItem {
     private String unit;
     private BigDecimal measurement;
 
-//    private LocalDateTime createdAt;
-//    private LocalDateTime updatedAt;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 }

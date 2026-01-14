@@ -1,8 +1,6 @@
 package com.app.controller;
 
-import com.app.model.ProductCategory;
 import com.app.model.User;
-import com.app.service.ProductCategoryService;
 import com.app.service.UserService;
 import io.javalin.http.Context;
 
@@ -16,10 +14,10 @@ public class UserController {
         this.userService = userService;
     }
 
-    public void getAll(Context context) throws SQLException{
+    public void getAllUsers(Context context) throws SQLException{
         context.json(userService.getAllUsers());
     }
-    public void getUser(Context context) throws SQLException {
+    public void getUserById(Context context) throws SQLException {
         String publicId = context.pathParam("public_id"); // get path param
         User user = userService.getUserByPublicId(publicId);
         if (user != null) {
@@ -29,13 +27,13 @@ public class UserController {
         }
     }
 
-    public void create(Context context) throws SQLException{
+    public void createUser(Context context) throws SQLException{
         User user = context.bodyAsClass(User.class);
         userService.createUser(user);
         context.status(201).json(user);
     }
 
-    public void update(Context context) throws SQLException{
+    public void updateUser(Context context) throws SQLException{
         String publicId = context.pathParam("public_id");
         User user = context.bodyAsClass(User.class);
         user.setPublicId(publicId);

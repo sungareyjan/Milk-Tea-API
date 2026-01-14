@@ -14,12 +14,10 @@ public class RoleMiddleware {
         User user = context.attribute("user");
 
         if (user == null) {
-
             throw new UnauthorizedResponse("Unauthorized");
         }
 
-        boolean allowed = Arrays.stream(allowedRoles)
-                .anyMatch(role -> role == user.getRole());
+        boolean allowed = Arrays.stream(allowedRoles).anyMatch(role -> role == user.getRole());
 
         if (!allowed) {
             throw new ForbiddenResponse("Forbidden: insufficient role");

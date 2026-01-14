@@ -13,15 +13,15 @@ public class SeederRunner {
     public static void runAll() {
         try (Connection connection = DBConnection.getConnection()) {
             List<Seeder> seeders = Arrays.asList(
-                    new RolesSeeder(),
-                    new PermissionSeeder(),
-                    new PaymentMethodSeeder(),
-                    new DefaultAdminUserSeeder(),
-                    new ProductSizeSeeder(),
-                    new ProductCategorySeeder(),
-                    new ProductSeeder(),
-                    new RolePermissionSeeder(),
-                    new MerchantSeeder()
+                new RolesSeeder(),
+                new PermissionSeeder(),
+                new PaymentMethodSeeder(),
+                new DefaultAdminUserSeeder(),
+                new ProductSizeSeeder(),
+                new ProductCategorySeeder(),
+                new ProductSeeder(),
+                new RolePermissionSeeder(),
+                new MerchantSeeder()
             );
 
             for (Seeder seeder : seeders) {

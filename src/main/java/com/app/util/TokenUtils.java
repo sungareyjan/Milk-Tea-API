@@ -36,12 +36,6 @@ public class TokenUtils {
         }
     }
 
-//    public static String getUsername(String token) {
-//        Algorithm algorithm = Algorithm.HMAC256(SECRET);
-//        JWTVerifier verifier = JWT.require(algorithm).build();
-//        DecodedJWT jwt = verifier.verify(token);
-//        return jwt.getSubject();
-//    }
 
     // --- NEW METHOD ---
     public static User getUserFromToken(String token) {

@@ -7,7 +7,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.UUID;
 
 public class MerchantRepository implements MerchantRepositoryImpl {
 
@@ -19,13 +18,13 @@ public class MerchantRepository implements MerchantRepositoryImpl {
 
     @Override
     public Merchant findDefault() {
-        String sql = "SELECT * FROM merchants ORDER BY id ASC LIMIT 1";
+        String query = "SELECT * FROM merchants ORDER BY id ASC LIMIT 1";
 
-        try (PreparedStatement ps = connection.prepareStatement(sql);
-             ResultSet rs = ps.executeQuery()) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query);
+             ResultSet resultSet = preparedStatement.executeQuery()) {
 
-            if (rs.next()) {
-                return map(rs);
+            if (resultSet.next()) {
+                return map(resultSet);
             }
             return null;
 
@@ -36,13 +35,13 @@ public class MerchantRepository implements MerchantRepositoryImpl {
 
     @Override
     public Merchant findByPublicId(String publicId) {
-        String sql = "SELECT * FROM merchants WHERE public_id = ?";
+        String query = "SELECT * FROM merchants WHERE public_id = ?";
 
-        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+        try (PreparedStatement ps = connection.prepareStatement(query)) {
             ps.setString(1, publicId);
-            ResultSet rs = ps.executeQuery();
+            ResultSet resultSet = ps.executeQuery();
 
-            return rs.next() ? map(rs) : null;
+            return resultSet.next() ? map(resultSet) : null;
 
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -51,7 +50,6 @@ public class MerchantRepository implements MerchantRepositoryImpl {
 
     @Override
     public Merchant save(Merchant merchant) {
-        // your insert logic here
         return merchant;
     }
 
@@ -61,13 +59,13 @@ public class MerchantRepository implements MerchantRepositoryImpl {
         return true;
     }
 
-    private Merchant map(ResultSet rs) throws SQLException {
+    private Merchant map(ResultSet resultSet) throws SQLException {
         return Merchant.builder()
-                .publicId(rs.getString("public_id"))
-                .name(rs.getString("name"))
-                .branch(rs.getString("branch"))
-                .address(rs.getString("address"))
-                .contactNumber(rs.getString("contact_number"))
-                .build();
+            .publicId(resultSet.getString("public_id"))
+            .name(resultSet.getString("name"))
+            .branch(resultSet.getString("branch"))
+            .address(resultSet.getString("address"))
+            .contactNumber(resultSet.getString("contact_number"))
+            .build();
     }
 }

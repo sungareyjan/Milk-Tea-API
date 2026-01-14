@@ -17,7 +17,8 @@ public class ProductCategoryRepository implements ProductCategoryRepositoryImpl 
     }
 
     @Override
-    public List<ProductCategory> findAll() throws SQLException {
+    public List<ProductCategory> findAllProductCategories() throws SQLException {
+
         List<ProductCategory> categories = new ArrayList<>();
         String query = "SELECT * FROM product_categories";
         try (PreparedStatement preparedStatement = connection.prepareStatement(query);
@@ -31,10 +32,12 @@ public class ProductCategoryRepository implements ProductCategoryRepositoryImpl 
             }
         }
         return categories;
+
     }
 
     @Override
-    public ProductCategory findById(int id) throws SQLException {
+    public ProductCategory findProductCategoryById(int id) throws SQLException {
+
         String query = "SELECT * FROM product_categories WHERE id = ?";
         try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.setInt(1, id);
@@ -48,13 +51,14 @@ public class ProductCategoryRepository implements ProductCategoryRepositoryImpl 
             }
         }
         return null;
+
     }
 
     @Override
-    public ProductCategory save(ProductCategory category) throws SQLException {
+    public ProductCategory insertProductCategory(ProductCategory category) throws SQLException {
 
         connection.setAutoCommit(false); // Start transaction
-        // Insert new category
+
         String insertQuery = "INSERT INTO product_categories (name, description) VALUES (?,?)";
         try (PreparedStatement preparedStatement = connection.prepareStatement(insertQuery, Statement.RETURN_GENERATED_KEYS)) {
             preparedStatement.setString(1, category.getName());
@@ -76,10 +80,11 @@ public class ProductCategoryRepository implements ProductCategoryRepositoryImpl 
         connection.commit();
         connection.setAutoCommit(true);
         return category;
+
     }
 
     @Override
-    public void update(ProductCategory productCategory) throws SQLException {
+    public void updateProductCategory(ProductCategory productCategory) throws SQLException {
         connection.setAutoCommit(false); // Start transaction
         String query = "UPDATE product_categories SET name=?, description=? WHERE id = ?";
         try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
@@ -93,7 +98,7 @@ public class ProductCategoryRepository implements ProductCategoryRepositoryImpl 
     }
 
     @Override
-    public boolean softDelete(int id) throws SQLException {
+    public boolean softDeleteProductCategory(int id) throws SQLException {
         connection.setAutoCommit(false); // Start transaction
         String query = "UPDATE product_categories SET deleted = 1 WHERE id = ?";
         try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {

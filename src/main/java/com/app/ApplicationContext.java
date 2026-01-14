@@ -5,8 +5,6 @@ import com.app.controller.*;
 import com.app.database.DBConnection;
 import com.app.exception.GlobalExceptionHandler;
 import com.app.middleware.AuthMiddleware;
-import com.app.middleware.RoleMiddleware;
-import com.app.model.enums.Role;
 import com.app.repository.*;
 import com.app.routes.*;
 import com.app.service.*;
@@ -40,19 +38,22 @@ public class ApplicationContext {
                 context.result("Hello World!");
             });
 
-            // --- Register Routes ---
+            // --- AUTH ---
             AuthController authController = new AuthController(new AuthService(new AuthRepository(connection)));
             new AuthRoutes(authController).routes(app);
 
+            // --- USER ---
             UserController userController = new UserController(new UserService(new UserRepository(connection)));
             new UserRoutes(userController).routes(app);
 
+            // --- PRODUCT ---
             ProductCategoryController categoryController = new ProductCategoryController(new ProductCategoryService(new ProductCategoryRepository(connection)));
             new ProductCategoryRoutes(categoryController).routes(app);
 
             ProductController productController = new ProductController(new ProductService(new ProductRepository(connection)));
             new ProductRoutes(productController).routes(app);
 
+            // --- CUSTOMER ---
             CustomerController customerController = new CustomerController(new CustomerService(new CustomerRepository(connection)));
             new CustomerRoutes(customerController).routes(app);
 
@@ -67,7 +68,10 @@ public class ApplicationContext {
             OrderController orderController = new OrderController(orderService, merchantService);
             new OrderRoutes(orderController).routes(app);
 
-            PaymentController paymentController = new PaymentController(new PaymentService(new PaymentRepository(connection)));
+            // --- PAYMENT ---
+            PaymentRepository paymentRepository = new PaymentRepository(connection, orderRepository);
+            PaymentService paymentService = new PaymentService(paymentRepository);
+            PaymentController paymentController = new PaymentController(paymentService);
             new PaymentRoutes(paymentController).routes(app);
 
             app.start(Integer.parseInt(Env.get("PORT", "8000")));

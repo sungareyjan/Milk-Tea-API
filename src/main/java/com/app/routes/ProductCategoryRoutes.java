@@ -18,10 +18,10 @@ public class ProductCategoryRoutes {
         app.before("/api/product-categories/*", context -> RoleMiddleware.allow(context, Role.ADMIN));
 
         // Routes
-        app.get("/api/product-categories", productCategoryController::getAll);
-        app.get("/api/product-categories/{id}", productCategoryController::getById);
-        app.post("/api/product-categories", productCategoryController::create);
-        app.put("/api/product-categories/{id}", productCategoryController::update);
-        app.patch("/api/product-categories/{id}", productCategoryController::delete);
+        app.get("/api/product-categories", productCategoryController::getAllProductCategories);
+        app.get("/api/product-categories/{id}", productCategoryController::getProductCategoryById);
+        app.post("/api/product-categories", productCategoryController::createProductCategory);
+        app.put("/api/product-categories/{id}", productCategoryController::updateProductCategory);
+        app.patch("/api/product-categories/{id}", productCategoryController::softDeleteProductCategory);
     }
 }

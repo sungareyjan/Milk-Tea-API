@@ -1,6 +1,5 @@
 package com.app.repository;
 
-import com.app.model.Merchant;
 import com.app.model.Order;
 import com.app.model.OrderItem;
 import com.app.model.enums.OrderStatus;
@@ -23,20 +22,21 @@ public class OrderRepository implements OrderRepositoryImpl {
     }
 
     @Override
-    public Order create(Order order) {
-        String orderSql = """
+    public Order insertOrder(Order order) {
+
+        String orderQuery = """
             INSERT INTO orders
             (public_id, public_customer_id, created_by, status,delivery_fee,service_fee,discount, total_amount, created_at)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
         """;
 
-        String itemSql = """
-        INSERT INTO order_items
-        (order_id, product_id, product_name, product_description,
-            category_name, category_description,
-            quantity, unit_price, subtotal, size, unit, measurement)
-         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-    """;
+        String itemQuery = """
+            INSERT INTO order_items
+            (order_id, product_id, product_name, product_description,
+                category_name, category_description,
+                quantity, unit_price, subtotal, size, unit, measurement)
+             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        """;
 
         try {
             connection.setAutoCommit(false);
@@ -46,22 +46,22 @@ public class OrderRepository implements OrderRepositoryImpl {
 
             // ---------- INSERT ORDER ----------
             String publicId = UUID.randomUUID().toString();
-            try (PreparedStatement ps = connection.prepareStatement(orderSql, Statement.RETURN_GENERATED_KEYS)) {
-                ps.setString(1, publicId);
-                ps.setString(2, order.getPublicCustomerId());
-                ps.setString(3, order.getCreatedBy());
-                ps.setString(4, OrderStatus.PENDING.name());
-                ps.setBigDecimal(5, order.getDeliveryFee());
-                ps.setBigDecimal(6, order.getServiceFee());
-                ps.setBigDecimal(7, order.getDiscount());
-                ps.setBigDecimal(8, totalAmount);
-                ps.setTimestamp(9, Timestamp.valueOf(LocalDateTime.now()));
+            try (PreparedStatement preparedStatement = connection.prepareStatement(orderQuery, Statement.RETURN_GENERATED_KEYS)) {
+                preparedStatement.setString(1, publicId);
+                preparedStatement.setString(2, order.getPublicCustomerId());
+                preparedStatement.setString(3, order.getCreatedBy());
+                preparedStatement.setString(4, OrderStatus.PENDING.name());
+                preparedStatement.setBigDecimal(5, order.getDeliveryFee());
+                preparedStatement.setBigDecimal(6, order.getServiceFee());
+                preparedStatement.setBigDecimal(7, order.getDiscount());
+                preparedStatement.setBigDecimal(8, totalAmount);
+                preparedStatement.setTimestamp(9, Timestamp.valueOf(LocalDateTime.now()));
 
-                ps.executeUpdate();
+                preparedStatement.executeUpdate();
 
-                try (ResultSet rs = ps.getGeneratedKeys()) {
-                    if (rs.next()) {
-                        order.setId(rs.getLong(1));
+                try (ResultSet resultSet = preparedStatement.getGeneratedKeys()) {
+                    if (resultSet.next()) {
+                        order.setId(resultSet.getLong(1));
                         order.setPublicId(publicId);
                         order.setStatus(OrderStatus.PENDING);
                         order.setCreatedAt(LocalDateTime.now());
@@ -70,23 +70,23 @@ public class OrderRepository implements OrderRepositoryImpl {
             }
 
             // ---------- INSERT ORDER ITEMS ----------
-            try (PreparedStatement ps = connection.prepareStatement(itemSql)) {
+            try (PreparedStatement preparedStatement = connection.prepareStatement(itemQuery)) {
                 for (OrderItem item : order.getItems()) {
-                    ps.setLong(1, order.getId());
-                    ps.setLong(2, item.getProductId());
-                    ps.setString(3, item.getProductName());
-                    ps.setString(4, item.getProductDescription());
-                    ps.setString(5, item.getProductCategory());
-                    ps.setString(6, item.getProductCategoryDescription());
-                    ps.setInt(7, item.getQuantity());
-                    ps.setBigDecimal(8, item.getUnitPrice());
-                    ps.setBigDecimal(9, item.getSubtotal()); // already computed
-                    ps.setString(10, item.getSize().name());
-                    ps.setString(11, item.getUnit());
-                    ps.setBigDecimal(12, item.getMeasurement());
-                    ps.addBatch();
+                    preparedStatement.setLong(1, order.getId());
+                    preparedStatement.setLong(2, item.getProductId());
+                    preparedStatement.setString(3, item.getProductName());
+                    preparedStatement.setString(4, item.getProductDescription());
+                    preparedStatement.setString(5, item.getProductCategory());
+                    preparedStatement.setString(6, item.getProductCategoryDescription());
+                    preparedStatement.setInt(7, item.getQuantity());
+                    preparedStatement.setBigDecimal(8, item.getUnitPrice());
+                    preparedStatement.setBigDecimal(9, item.getSubtotal()); // already computed
+                    preparedStatement.setString(10, item.getSize().name());
+                    preparedStatement.setString(11, item.getUnit());
+                    preparedStatement.setBigDecimal(12, item.getMeasurement());
+                    preparedStatement.addBatch();
                 }
-                ps.executeBatch();
+                preparedStatement.executeBatch();
             }
 
             connection.commit();
@@ -101,8 +101,9 @@ public class OrderRepository implements OrderRepositoryImpl {
     }
 
     @Override
-    public Order findByPublicId(String publicId) {
-        String orderSql = """
+    public Order findOrderById(String publicId) {
+
+        String orderQuery = """
             SELECT id, public_id, public_customer_id, total_amount, status,
                    created_by, created_at, updated_at
             FROM orders
@@ -110,44 +111,44 @@ public class OrderRepository implements OrderRepositoryImpl {
             LIMIT 1
         """;
 
-        String itemsSql = """
+        String itemsQuery = """
             SELECT id, product_id, product_name, quantity, unit_price, subtotal, size, unit, measurement
             FROM order_items
             WHERE order_id = ?
         """;
 
-        try (PreparedStatement stmt = connection.prepareStatement(orderSql)) {
-            stmt.setString(1, publicId);
+        try (PreparedStatement preparedStatement = connection.prepareStatement(orderQuery)) {
+            preparedStatement.setString(1, publicId);
 
-            try (ResultSet rs = stmt.executeQuery()) {
-                if (!rs.next()) return null;
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (!resultSet.next()) return null;
 
                 Order order = new Order();
-                order.setId(rs.getLong("id"));
-                order.setPublicId(rs.getString("public_id"));
-                order.setPublicCustomerId(rs.getString("public_customer_id"));
-                order.setTotalAmount(rs.getBigDecimal("total_amount"));
-                order.setStatus(OrderStatus.fromString(rs.getString("status")));
-                order.setCreatedBy(rs.getString("created_by"));
-                order.setCreatedAt(rs.getTimestamp("created_at").toLocalDateTime());
+                order.setId(resultSet.getLong("id"));
+                order.setPublicId(resultSet.getString("public_id"));
+                order.setPublicCustomerId(resultSet.getString("public_customer_id"));
+                order.setTotalAmount(resultSet.getBigDecimal("total_amount"));
+                order.setStatus(OrderStatus.fromString(resultSet.getString("status")));
+                order.setCreatedBy(resultSet.getString("created_by"));
+                order.setCreatedAt(resultSet.getTimestamp("created_at").toLocalDateTime());
 
                 // Fetch order items
-                try (PreparedStatement itemStmt = connection.prepareStatement(itemsSql)) {
-                    itemStmt.setLong(1, order.getId());
-                    try (ResultSet itemsRs = itemStmt.executeQuery()) {
+                try (PreparedStatement preparedStatementItem = connection.prepareStatement(itemsQuery)) {
+                    preparedStatementItem.setLong(1, order.getId());
+                    try (ResultSet itemsResultSet = preparedStatementItem.executeQuery()) {
                         List<OrderItem> items = new ArrayList<>();
-                        while (itemsRs.next()) {
+                        while (itemsResultSet.next()) {
                             OrderItem item = new OrderItem();
-                            item.setId(itemsRs.getLong("id"));
+                            item.setId(itemsResultSet.getLong("id"));
                             item.setOrderId(order.getId());
-                            item.setProductId(itemsRs.getLong("product_id"));
-                            item.setProductName(itemsRs.getString("product_name"));
-                            item.setQuantity(itemsRs.getInt("quantity"));
-                            item.setUnitPrice(itemsRs.getBigDecimal("unit_price"));
-                            item.setSubtotal(itemsRs.getBigDecimal("subtotal"));
-                            item.setSize(Size.valueOf(itemsRs.getString("size")));
-                            item.setUnit(itemsRs.getString("unit"));
-                            item.setMeasurement(itemsRs.getBigDecimal("measurement"));
+                            item.setProductId(itemsResultSet.getLong("product_id"));
+                            item.setProductName(itemsResultSet.getString("product_name"));
+                            item.setQuantity(itemsResultSet.getInt("quantity"));
+                            item.setUnitPrice(itemsResultSet.getBigDecimal("unit_price"));
+                            item.setSubtotal(itemsResultSet.getBigDecimal("subtotal"));
+                            item.setSize(Size.valueOf(itemsResultSet.getString("size")));
+                            item.setUnit(itemsResultSet.getString("unit"));
+                            item.setMeasurement(itemsResultSet.getBigDecimal("measurement"));
 
                             items.add(item);
                         }
@@ -161,17 +162,19 @@ public class OrderRepository implements OrderRepositoryImpl {
         } catch (SQLException e) {
             throw new RuntimeException("Failed to fetch order", e);
         }
+
     }
 
     @Override
-    public List<Order> findAll() {
-        String orderSql = "SELECT public_id FROM orders ORDER BY created_at DESC";
-        List<Order> orders = new ArrayList<>();
-        try (PreparedStatement stmt = connection.prepareStatement(orderSql);
-             ResultSet rs = stmt.executeQuery()) {
+    public List<Order> findAllOrders() {
 
-            while (rs.next()) {
-                orders.add(findByPublicId(rs.getString("public_id")));
+        String orderQuery = "SELECT public_id FROM orders ORDER BY created_at DESC";
+        List<Order> orders = new ArrayList<>();
+        try (PreparedStatement preparedStatement = connection.prepareStatement(orderQuery);
+             ResultSet resultSet = preparedStatement.executeQuery()) {
+
+            while (resultSet.next()) {
+                orders.add(findOrderById(resultSet.getString("public_id")));
             }
 
             return orders;
@@ -179,19 +182,22 @@ public class OrderRepository implements OrderRepositoryImpl {
         } catch (SQLException e) {
             throw new RuntimeException("Failed to fetch all orders", e);
         }
+
     }
 
     @Override
-    public Order updateStatus(String publicId, String status) {
+    public Order updateOrderStatus(String publicId, String status) {
+
         String sql = "UPDATE orders SET status = ? WHERE public_id = ?";
-        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-            stmt.setString(1, status);
-            stmt.setString(2, publicId);
-            int updated = stmt.executeUpdate();
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            preparedStatement.setString(1, status);
+            preparedStatement.setString(2, publicId);
+            int updated = preparedStatement.executeUpdate();
             if (updated == 0) return null;
-            return findByPublicId(publicId);
+            return findOrderById(publicId);
         } catch (SQLException e) {
             throw new RuntimeException("Failed to update order status", e);
         }
+
     }
 }

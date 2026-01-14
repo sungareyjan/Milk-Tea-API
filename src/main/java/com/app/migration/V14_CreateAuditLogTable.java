@@ -8,6 +8,7 @@ public class V14_CreateAuditLogTable implements Migration{
 
     @Override
     public void run(Connection connection) throws SQLException {
+
         String query = """
         CREATE TABLE IF NOT EXISTS audit_logs (
             id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,

@@ -8,6 +8,7 @@ public class V2_CreatePermissionsTable implements Migration {
 
     @Override
     public void run(Connection connection) throws SQLException {
+
         String query = """
         CREATE TABLE IF NOT EXISTS permissions (
             id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,         -- internal PK

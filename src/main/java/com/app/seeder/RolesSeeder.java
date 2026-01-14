@@ -9,8 +9,8 @@ public class RolesSeeder implements Seeder{
     @Override
     public void run(Connection connection) throws SQLException {
         String[][] roles = {
-                {"admin", "Administrator with full system access"},
-                {"staff", "Employee with limited access"}
+            {"admin", "Administrator with full system access"},
+            {"staff", "Employee with limited access"}
         };
 
         String query = "INSERT IGNORE INTO roles (name, description) VALUES (?, ?)";

@@ -5,8 +5,10 @@ import com.app.model.Customer;
 import java.util.List;
 
 public interface CustomerServiceImpl {
-    Customer create(Customer customer);
-    Customer findByPublicId(String publicId);
-    List<Customer> getAll();
-    Customer update(String publicId, Customer customer);
+
+    Customer createCustomer(Customer customer);
+    Customer findCustomerById(String publicId);
+    List<Customer> getAllCustomers();
+    Customer updateCustomer(String publicId, Customer customer);
+
 }

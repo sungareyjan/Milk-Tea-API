@@ -20,26 +20,26 @@ public class OrderService implements OrderServiceImpl {
     }
 
     @Override
-    public Order create(Order order) {
+    public Order createOrder(Order order) {
         if (order.getStatus() == null) {
             order.setStatus(OrderStatus.PENDING);
         }
-        return repository.create(order);
+        return repository.insertOrder(order);
     }
 
     @Override
-    public Order findByPublicId(String publicId) {
-        return repository.findByPublicId(publicId);
+    public Order findOrderById(String publicId) {
+        return repository.findOrderById(publicId);
     }
 
     @Override
-    public List<Order> findAll() {
-        return repository.findAll();
+    public List<Order> findAllOrders() {
+        return repository.findAllOrders();
     }
 
     @Override
-    public Order updateStatus(String publicId, OrderStatus status) {
-        return repository.updateStatus(publicId, status.name());
+    public Order updateOrderStatus(String publicId, OrderStatus status) {
+        return repository.updateOrderStatus(publicId, status.name());
     }
 
     public Map<String, Object> buildReceipt(Order order, Merchant merchant) {

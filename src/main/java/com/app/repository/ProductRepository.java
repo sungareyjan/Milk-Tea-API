@@ -140,35 +140,34 @@ public class ProductRepository implements ProductRepositoryImpl {
     }
 
     @Override
-    public Product create(Product product) {
-        String sql = """
-                INSERT INTO products
-                (name, description, category_id, size_id, price, availability)
-                VALUES (?, ?, ?, ?, ?, ?)
-                """;
+    public Product insertProduct(Product product) {
+        String query = """
+            INSERT INTO products
+            (name, description, category_id, size_id, price, availability)
+            VALUES (?, ?, ?, ?, ?, ?)
+        """;
 
-        try (PreparedStatement ps = connection.prepareStatement(
-                sql, Statement.RETURN_GENERATED_KEYS)) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
 
             // Set parameters
-            ps.setString(1, product.getName());
-            ps.setString(2, product.getDescription());
-            ps.setLong(3, product.getCategoryId());
-            ps.setLong(4, product.getSizeId());
-            ps.setDouble(5, product.getPrice());
-            ps.setBoolean(6, product.isAvailability());
+            preparedStatement.setString(1, product.getName());
+            preparedStatement.setString(2, product.getDescription());
+            preparedStatement.setLong(3, product.getCategoryId());
+            preparedStatement.setLong(4, product.getSizeId());
+            preparedStatement.setDouble(5, product.getPrice());
+            preparedStatement.setBoolean(6, product.isAvailability());
 
             // Execute insert
-            int affectedRows = ps.executeUpdate();
+            int affectedRows = preparedStatement.executeUpdate();
 
             if (affectedRows == 0) {
                 throw new RuntimeException("Creating product failed, no rows affected.");
             }
 
             // Get generated ID
-            try (ResultSet rs = ps.getGeneratedKeys()) {
-                if (rs.next()) {
-                    product.setId(rs.getLong(1));
+            try (ResultSet resultSet = preparedStatement.getGeneratedKeys()) {
+                if (resultSet.next()) {
+                    product.setId(resultSet.getLong(1));
                 } else {
                     throw new RuntimeException("Creating product failed, no ID obtained.");
                 }
@@ -180,7 +179,7 @@ public class ProductRepository implements ProductRepositoryImpl {
             // Handle UNIQUE constraint for name + size
             if (e.getMessage().contains("uk_products_name_size")) {
                 throw new DuplicateResourceException(
-                        "Product '" + product.getName() + "' with the same size already exists."
+                    "Product '" + product.getName() + "' with the same size already exists."
                 );
             }
             throw new RuntimeException("Database constraint violation", e);
@@ -191,14 +190,14 @@ public class ProductRepository implements ProductRepositoryImpl {
     }
 
     @Override
-    public Product findById(long id) {
+    public Product findProductById(long id) {
         String sql = "SELECT * FROM products WHERE id = ?";
-        try (PreparedStatement ps = connection.prepareStatement(sql)) {
-            ps.setLong(1, id);
-            ResultSet rs = ps.executeQuery();
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            preparedStatement.setLong(1, id);
+            ResultSet resultSet = preparedStatement.executeQuery();
 
-            if (rs.next()) {
-                return mapRow(rs);
+            if (resultSet.next()) {
+                return mapRow(resultSet);
             }
             return null;
 
@@ -208,15 +207,15 @@ public class ProductRepository implements ProductRepositoryImpl {
     }
 
     @Override
-    public List<Product> findAll() {
+    public List<Product> findAllProducts() {
         String sql = "SELECT * FROM products";
         List<Product> products = new ArrayList<>();
 
-        try (Statement stmt = connection.createStatement();
-             ResultSet rs = stmt.executeQuery(sql)) {
+        try (Statement statement = connection.createStatement();
+             ResultSet resultSet = statement.executeQuery(sql)) {
 
-            while (rs.next()) {
-                products.add(mapRow(rs));
+            while (resultSet.next()) {
+                products.add(mapRow(resultSet));
             }
             return products;
 
@@ -226,23 +225,23 @@ public class ProductRepository implements ProductRepositoryImpl {
     }
 
     @Override
-    public Product update(long id, Product product) {
-        String sql = """
+    public Product updateProduct(long id, Product product) {
+        String query = """
             UPDATE products
             SET name=?, description=?, category_id=?, size_id=?, price=?, availability=?
             WHERE id=?
         """;
 
-        try (PreparedStatement ps = connection.prepareStatement(sql)) {
-            ps.setString(1, product.getName());
-            ps.setString(2, product.getDescription());
-            ps.setInt(3, product.getCategoryId());
-            ps.setInt(4, product.getSizeId());
-            ps.setDouble(5, product.getPrice());
-            ps.setBoolean(6, product.isAvailability());
-            ps.setLong(7, id);
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setString(1, product.getName());
+            preparedStatement.setString(2, product.getDescription());
+            preparedStatement.setInt(3, product.getCategoryId());
+            preparedStatement.setInt(4, product.getSizeId());
+            preparedStatement.setDouble(5, product.getPrice());
+            preparedStatement.setBoolean(6, product.isAvailability());
+            preparedStatement.setLong(7, id);
 
-            ps.executeUpdate();
+            preparedStatement.executeUpdate();
             product.setId(id);
             return product;
 
@@ -253,24 +252,24 @@ public class ProductRepository implements ProductRepositoryImpl {
 
     @Override
     public boolean delete(long id) {
-        String sql = "DELETE FROM products WHERE id = ?";
-        try (PreparedStatement ps = connection.prepareStatement(sql)) {
-            ps.setLong(1, id);
-            return ps.executeUpdate() > 0;
+        String query = "DELETE FROM products WHERE id = ?";
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setLong(1, id);
+            return preparedStatement.executeUpdate() > 0;
         } catch (SQLException e) {
             throw new RuntimeException("Failed to delete product", e);
         }
     }
 
-    private Product mapRow(ResultSet rs) throws SQLException {
+    private Product mapRow(ResultSet resultSet) throws SQLException {
         return new Product(
-                rs.getLong("id"),
-                rs.getString("name"),
-                rs.getString("description"),
-                rs.getInt("category_id"),
-                rs.getInt("size_id"),
-                rs.getDouble("price"),
-                rs.getBoolean("availability")
+            resultSet.getLong("id"),
+            resultSet.getString("name"),
+            resultSet.getString("description"),
+            resultSet.getInt("category_id"),
+            resultSet.getInt("size_id"),
+            resultSet.getDouble("price"),
+            resultSet.getBoolean("availability")
         );
     }
 }

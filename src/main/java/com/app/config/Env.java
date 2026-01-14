@@ -7,8 +7,7 @@ public class Env {
     private static final Properties properties = new Properties();
 
     static {
-        try (InputStream input =
-                     Env.class.getClassLoader().getResourceAsStream(".env")) {
+        try (InputStream input = Env.class.getClassLoader().getResourceAsStream(".env")) {
 
             if (input != null) {
                 properties.load(input);
@@ -22,7 +21,7 @@ public class Env {
     }
 
     public static String get(String key, String defaultValue) {
-        // Check system environment (Docker, server)
+        // Check system environment
         String value = System.getenv(key);
         if (value != null) return value;
 

@@ -35,8 +35,8 @@ public class V16_CreateCustomerAddressTable implements Migration {
             INDEX idx_address_city (city),
             INDEX idx_address_province (province)
         ) ENGINE=InnoDB
-        DEFAULT CHARSET=utf8mb4
-        COLLATE=utf8mb4_unicode_ci;
+            DEFAULT CHARSET=utf8mb4
+            COLLATE=utf8mb4_unicode_ci;
         """;
 
         try (Statement statement = connection.createStatement()) {

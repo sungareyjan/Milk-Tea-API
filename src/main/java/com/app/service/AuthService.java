@@ -18,6 +18,7 @@ public class AuthService implements AuthServiceImpl {
 
     @Override
     public String login(String username, String password) throws SQLException {
+
         User user = userRepository.findByUsername(username);
         if (user == null || !PasswordUtils.verifyPassword(password, user.getPassword())) {
             throw new RuntimeException("Invalid username or password");

@@ -13,7 +13,7 @@ public class PaymentService implements PaymentServiceImpl {
     }
 
     @Override
-    public Payment create(Payment payment) {
+    public Payment createPayment(Payment payment) {
         // assign publicId if not set
         if (payment.getPublicId() == null || payment.getPublicId().isEmpty()) {
             payment.setPublicId(java.util.UUID.randomUUID().toString());
@@ -24,16 +24,16 @@ public class PaymentService implements PaymentServiceImpl {
             payment.setStatus(com.app.model.enums.PaymentStatus.PENDING);
         }
 
-        return repository.save(payment);
+        return repository.insertPayment(payment);
     }
 
     @Override
-    public Payment findByPublicId(String publicId) {
-        return repository.findByPublicId(publicId);
+    public Payment findPaymentById(String publicId) {
+        return repository.findPaymentById(publicId);
     }
 
     @Override
-    public Payment updateStatus(String publicId, String status) {
-        return repository.updateStatus(publicId, status);
+    public Payment updatePaymentStatus(String publicId, String status) {
+        return repository.updatePaymentStatus(publicId, status);
     }
 }

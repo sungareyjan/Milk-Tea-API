@@ -5,7 +5,6 @@ import com.app.model.Address;
 import com.app.model.Customer;
 import com.app.repository.impl.CustomerRepositoryImpl;
 
-
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,7 +17,7 @@ public class CustomerRepository implements CustomerRepositoryImpl {
         this.connection = connection;
     }
 
-    public Customer create(Customer customer) {
+    public Customer insertCustomer(Customer customer) {
         String customerSql = """
             INSERT INTO customers
             (first_name, middle_name, last_name, phone, email, public_id)
@@ -63,37 +62,39 @@ public class CustomerRepository implements CustomerRepositoryImpl {
 
     // ===== Helper Methods =====
     private long insertCustomer(String sql, Customer customer) throws SQLException {
-        try (PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
-            stmt.setString(1, customer.getFirstName());
-            stmt.setString(2, customer.getMiddleName());
-            stmt.setString(3, customer.getLastName());
-            stmt.setString(4, customer.getPhone());
-            stmt.setString(5, customer.getEmail());
-            stmt.setString(6, customer.getPublicId());
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
-            stmt.executeUpdate();
+            preparedStatement.setString(1, customer.getFirstName());
+            preparedStatement.setString(2, customer.getMiddleName());
+            preparedStatement.setString(3, customer.getLastName());
+            preparedStatement.setString(4, customer.getPhone());
+            preparedStatement.setString(5, customer.getEmail());
+            preparedStatement.setString(6, customer.getPublicId());
 
-            try (ResultSet rs = stmt.getGeneratedKeys()) {
-                if (rs.next()) {
-                    return rs.getLong(1);
+            preparedStatement.executeUpdate();
+
+            try (ResultSet resultSet = preparedStatement.getGeneratedKeys()) {
+                if (resultSet.next()) {
+                    return resultSet.getLong(1);
                 }
                 throw new SQLException("Failed to retrieve customer ID");
             }
         }
+
     }
 
     private void insertAddress(String sql, long customerId, Address address) throws SQLException {
 
-        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-            stmt.setLong(1, customerId);
-            stmt.setString(2, address.getStreet());
-            stmt.setString(3, address.getBarangay());
-            stmt.setString(4, address.getCity());
-            stmt.setString(5, address.getProvince());
-            stmt.setString(6, address.getPostalCode());
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            preparedStatement.setLong(1, customerId);
+            preparedStatement.setString(2, address.getStreet());
+            preparedStatement.setString(3, address.getBarangay());
+            preparedStatement.setString(4, address.getCity());
+            preparedStatement.setString(5, address.getProvince());
+            preparedStatement.setString(6, address.getPostalCode());
 
-            stmt.executeUpdate();
+            preparedStatement.executeUpdate();
         }
     }
 
@@ -112,50 +113,53 @@ public class CustomerRepository implements CustomerRepositoryImpl {
     }
 
     private RuntimeException handleDuplicate(SQLIntegrityConstraintViolationException e, Customer customer) {
-        String msg = e.getMessage().toLowerCase();
 
-        if (msg.contains("email")) {
+        String message = e.getMessage().toLowerCase();
+
+        if (message.contains("email")) {
             return new DuplicateResourceException(
                 "Email '" + customer.getEmail() + "' already exists."
             );
         }
 
-        if (msg.contains("phone")) {
+        if (message.contains("phone")) {
             return new DuplicateResourceException(
                 "Phone '" + customer.getPhone() + "' already exists."
             );
         }
 
-        if (msg.contains("public_id")) {
+        if (message.contains("public_id")) {
             return new DuplicateResourceException(
                 "Public ID already exists."
             );
         }
 
         return new RuntimeException("Duplicate resource", e);
+
     }
     @Override
-    public Customer findByPublicId(String publicId) {
+    public Customer findCustomerById(String publicId) {
+
         String sql = """
-        SELECT
-            c.id, c.public_id, c.first_name, c.middle_name, c.last_name,
-            c.phone, c.email,
-            a.street, a.barangay, a.city, a.province, a.postal_code
-        FROM customers c
-        LEFT JOIN customer_addresses a ON a.customer_id = c.id
-        WHERE c.public_id = ? AND c.deleted_at IS NULL
-        LIMIT 1
-    """;
+            SELECT
+                c.id, c.public_id, c.first_name, c.middle_name, c.last_name,
+                c.phone, c.email,
+                a.street, a.barangay, a.city, a.province, a.postal_code
+            FROM customers c
+            LEFT JOIN customer_addresses a ON a.customer_id = c.id
+            WHERE c.public_id = ? AND c.deleted_at IS NULL
+            LIMIT 1
+        """;
 
         try (
-            PreparedStatement stmt = connection.prepareStatement(sql)
+            PreparedStatement preparedStatement = connection.prepareStatement(sql)
         ) {
-            stmt.setString(1, publicId);
-            ResultSet rs = stmt.executeQuery();
-            if (!rs.next()) {
+            preparedStatement.setString(1, publicId);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if (!resultSet.next()) {
                 return null; // or throw NotFoundException
             }
-            return mapCustomer(rs);
+            return mapCustomer(resultSet);
 
         } catch (SQLException e) {
             throw new RuntimeException("Failed to fetch customer with public id " + publicId, e);
@@ -163,26 +167,26 @@ public class CustomerRepository implements CustomerRepositoryImpl {
     }
 
     @Override
-    public List<Customer> findAll() {
+    public List<Customer> findAllCustomers() {
         String sql = """
-        SELECT
-            c.id, c.public_id, c.first_name, c.middle_name, c.last_name,
-            c.phone, c.email,
-            a.street, a.barangay, a.city, a.province, a.postal_code
-        FROM customers c
-        LEFT JOIN customer_addresses a ON a.customer_id = c.id
-        WHERE c.deleted_at IS NULL
-        ORDER BY c.created_at DESC
-    """;
+            SELECT
+                c.id, c.public_id, c.first_name, c.middle_name, c.last_name,
+                c.phone, c.email,
+                a.street, a.barangay, a.city, a.province, a.postal_code
+            FROM customers c
+            LEFT JOIN customer_addresses a ON a.customer_id = c.id
+            WHERE c.deleted_at IS NULL
+            ORDER BY c.created_at DESC
+        """;
 
         List<Customer> customers = new ArrayList<>();
 
         try (
-            PreparedStatement stmt = connection.prepareStatement(sql);
-            ResultSet rs = stmt.executeQuery()
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            ResultSet resultSet = preparedStatement.executeQuery()
         ) {
-            while (rs.next()) {
-                customers.add(mapCustomer(rs));
+            while (resultSet.next()) {
+                customers.add(mapCustomer(resultSet));
             }
 
             return customers;
@@ -192,24 +196,24 @@ public class CustomerRepository implements CustomerRepositoryImpl {
         }
     }
 
-    private Customer mapCustomer(ResultSet rs) throws SQLException {
+    private Customer mapCustomer(ResultSet resultSet) throws SQLException {
 
         Customer customer = new Customer();
-        customer.setId(rs.getLong("id"));
-        customer.setPublicId(rs.getString("public_id"));
-        customer.setFirstName(rs.getString("first_name"));
-        customer.setMiddleName(rs.getString("middle_name"));
-        customer.setLastName(rs.getString("last_name"));
-        customer.setPhone(rs.getString("phone"));
-        customer.setEmail(rs.getString("email"));
+        customer.setId(resultSet.getLong("id"));
+        customer.setPublicId(resultSet.getString("public_id"));
+        customer.setFirstName(resultSet.getString("first_name"));
+        customer.setMiddleName(resultSet.getString("middle_name"));
+        customer.setLastName(resultSet.getString("last_name"));
+        customer.setPhone(resultSet.getString("phone"));
+        customer.setEmail(resultSet.getString("email"));
 
-        if (rs.getString("street") != null) {
+        if (resultSet.getString("street") != null) {
             Address address = new Address();
-            address.setStreet(rs.getString("street"));
-            address.setBarangay(rs.getString("barangay"));
-            address.setCity(rs.getString("city"));
-            address.setProvince(rs.getString("province"));
-            address.setPostalCode(rs.getString("postal_code"));
+            address.setStreet(resultSet.getString("street"));
+            address.setBarangay(resultSet.getString("barangay"));
+            address.setCity(resultSet.getString("city"));
+            address.setProvince(resultSet.getString("province"));
+            address.setPostalCode(resultSet.getString("postal_code"));
             customer.setAddress(address);
         }
 
@@ -217,32 +221,33 @@ public class CustomerRepository implements CustomerRepositoryImpl {
     }
 
     @Override
-    public Customer update(String publicId, Customer customer) {
-        String customerSql = """
-        UPDATE customers
-        SET first_name = ?, middle_name = ?, last_name = ?, phone = ?, email = ?
-        WHERE public_id = ?
-    """;
+    public Customer updateCustomer(String publicId, Customer customer) {
 
-        String addressSql = """
-        UPDATE customer_addresses
-        SET street = ?, barangay = ?, city = ?, province = ?, postal_code = ?
-        WHERE customer_id = ?
-    """;
+        String customerQuery = """
+            UPDATE customers
+            SET first_name = ?, middle_name = ?, last_name = ?, phone = ?, email = ?
+            WHERE public_id = ?
+        """;
+
+        String addressQuery = """
+            UPDATE customer_addresses
+            SET street = ?, barangay = ?, city = ?, province = ?, postal_code = ?
+            WHERE customer_id = ?
+        """;
 
         try {
             connection.setAutoCommit(false);
 
             // Update customer
-            try (PreparedStatement stmt = connection.prepareStatement(customerSql)) {
-                stmt.setString(1, customer.getFirstName());
-                stmt.setString(2, customer.getMiddleName());
-                stmt.setString(3, customer.getLastName());
-                stmt.setString(4, customer.getPhone());
-                stmt.setString(5, customer.getEmail());
-                stmt.setString(6, publicId);
+            try (PreparedStatement preparedStatement = connection.prepareStatement(customerQuery)) {
+                preparedStatement.setString(1, customer.getFirstName());
+                preparedStatement.setString(2, customer.getMiddleName());
+                preparedStatement.setString(3, customer.getLastName());
+                preparedStatement.setString(4, customer.getPhone());
+                preparedStatement.setString(5, customer.getEmail());
+                preparedStatement.setString(6, publicId);
 
-                int updated = stmt.executeUpdate();
+                int updated = preparedStatement.executeUpdate();
                 if (updated == 0) {
                     throw new RuntimeException("Customer not found with ID " + customer.getId());
                 }
@@ -251,15 +256,15 @@ public class CustomerRepository implements CustomerRepositoryImpl {
             // Update address (if exists)
             Address address = customer.getAddress();
             if (address != null) {
-                try (PreparedStatement stmt = connection.prepareStatement(addressSql)) {
-                    stmt.setString(1, address.getStreet());
-                    stmt.setString(2, address.getBarangay());
-                    stmt.setString(3, address.getCity());
-                    stmt.setString(4, address.getProvince());
-                    stmt.setString(5, address.getPostalCode());
-                    stmt.setLong(6, customer.getId());
+                try (PreparedStatement preparedStatement = connection.prepareStatement(addressQuery)) {
+                    preparedStatement.setString(1, address.getStreet());
+                    preparedStatement.setString(2, address.getBarangay());
+                    preparedStatement.setString(3, address.getCity());
+                    preparedStatement.setString(4, address.getProvince());
+                    preparedStatement.setString(5, address.getPostalCode());
+                    preparedStatement.setLong(6, customer.getId());
 
-                    stmt.executeUpdate();
+                    preparedStatement.executeUpdate();
                 }
             }
 

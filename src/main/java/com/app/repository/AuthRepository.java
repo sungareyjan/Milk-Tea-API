@@ -16,13 +16,14 @@ public class AuthRepository implements AuthRepositoryImpl {
 
     @Override
     public User findByUsername(String username) throws SQLException {
+
         String query = """
             SELECT users.public_id, users.username, users.password, roles.name as role
             FROM users
             JOIN user_roles ON user_roles.user_id = users.id
                 JOIN roles ON roles.id = user_roles.role_id
             WHERE users.username = ?
-            """;
+        """;
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.setString(1, username);

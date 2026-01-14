@@ -5,9 +5,7 @@ import com.app.model.Merchant;
 public interface MerchantServiceImpl {
 
     Merchant findByPublicId(String publicId);
-
     Merchant save(Merchant merchant);
-
     boolean update(Merchant merchant);
 
     // Default: return first merchant if none specified

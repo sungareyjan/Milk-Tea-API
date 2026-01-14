@@ -9,9 +9,9 @@ public class ProductSizeSeeder implements Seeder{
     @Override
     public void run(Connection connection) throws SQLException {
         String[][] size = {
-                {"Small", "250ml"},
-                {"Medium", "350ml"},
-                {"Large", "500ml"}
+            {"Small", "250ml"},
+            {"Medium", "350ml"},
+            {"Large", "500ml"}
         };
 
         String query = "INSERT IGNORE INTO product_sizes (name, description) VALUES (?, ?)";

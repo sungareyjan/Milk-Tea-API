@@ -8,6 +8,7 @@ public class V3_CreateUsersTable implements Migration {
 
     @Override
     public void run(Connection connection) throws SQLException {
+
         String query = """
         CREATE TABLE IF NOT EXISTS users (
             id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,  -- internal PK

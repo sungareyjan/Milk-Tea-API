@@ -51,23 +51,23 @@ public class ProductService implements ProductServiceImpl {
     }
 
     @Override
-    public Product create(Product product) {
-        return repository.create(product);
+    public Product createProduct(Product product) {
+        return repository.insertProduct(product);
     }
 
     @Override
-    public List<Product> getAll() {
-        return repository.findAll();
+    public List<Product> getAllProducts() {
+        return repository.findAllProducts();
     }
 
     @Override
-    public Product getById(long id) {
-        return repository.findById(id);
+    public Product getProductById(long id) {
+        return repository.findProductById(id);
     }
 
     @Override
-    public Product update(long id, Product product) {
-        return repository.update(id, product);
+    public Product updateProduct(long id, Product product) {
+        return repository.updateProduct(id, product);
     }
 
     @Override

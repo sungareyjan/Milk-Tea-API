@@ -18,9 +18,9 @@ public class UserRoutes {
         app.before("/api/users/*", context -> RoleMiddleware.allow(context, Role.ADMIN));
 
         // User CRUD routes
-        app.get("/api/users", userController::getAll);
-        app.get("/api/users/{public_id}", userController::getUser);
-        app.post("/api/users", userController::create);
-        app.put("/api/users/{public_id}", userController::update);
+        app.get("/api/users", userController::getAllUsers);
+        app.get("/api/users/{public_id}", userController::getUserById);
+        app.post("/api/users", userController::createUser);
+        app.put("/api/users/{public_id}", userController::updateUser);
     }
 }

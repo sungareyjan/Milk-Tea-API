@@ -16,4 +16,5 @@ public class Product {
     private int sizeId;
     private double price;
     private boolean availability;
+
 }

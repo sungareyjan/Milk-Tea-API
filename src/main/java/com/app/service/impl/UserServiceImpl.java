@@ -11,4 +11,5 @@ public interface UserServiceImpl {
     User getUserByPublicId(String publicId) throws SQLException;
     void createUser(User user) throws SQLException;
     void updateUser(User user) throws  SQLException;
+
 }

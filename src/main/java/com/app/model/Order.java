@@ -16,6 +16,7 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 public class Order {
+
     @JsonIgnore
     private long id;
 

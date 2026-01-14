@@ -13,11 +13,13 @@ public class ProductRoutes {
     }
 
     public  void routes(Javalin app){
+        // Middleware for role checking
         app.before("/api/products/*",context -> RoleMiddleware.allow(context, Role.ADMIN));
 
-        app.get("api/products",productController::getAll);
-        app.get("/api/products/{id}", productController::getById);
-        app.post("/api/products", productController::create);
-        app.put("/api/products/{id}", productController::update);
+        // Routes
+        app.get("api/products",productController::getAllProducts);
+        app.get("/api/products/{id}", productController::getProductById);
+        app.post("/api/products", productController::createProduct);
+        app.put("/api/products/{id}", productController::updateProduct);
     }
 }

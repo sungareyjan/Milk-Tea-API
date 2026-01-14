@@ -1,6 +1,5 @@
 package com.app.model;
 
-import com.app.model.enums.PaymentMethod;
 import com.app.model.enums.PaymentStatus;
 import lombok.Data;
 

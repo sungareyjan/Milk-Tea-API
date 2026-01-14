@@ -61,34 +61,34 @@ public class ProductController {
         this.service = service;
     }
 
-    public void create(Context ctx) {
-        Product product = ctx.bodyAsClass(Product.class);
-        ctx.status(201).json(service.create(product));
+    public void createProduct(Context context) {
+        Product product = context.bodyAsClass(Product.class);
+        context.status(201).json(service.createProduct(product));
     }
 
-    public void getAll(Context ctx) {
-        ctx.json(service.getAll());
+    public void getAllProducts(Context ctx) {
+        ctx.json(service.getAllProducts());
     }
 
-    public void getById(Context ctx) {
-        long id = Long.parseLong(ctx.pathParam("id"));
-        Product product = service.getById(id);
+    public void getProductById(Context context) {
+        long id = Long.parseLong(context.pathParam("id"));
+        Product product = service.getProductById(id);
         if (product == null) {
-            ctx.status(404).json("Product not found");
+            context.status(404).json("Product not found");
             return;
         }
-        ctx.json(product);
+        context.json(product);
     }
 
-    public void update(Context ctx) {
-        long id = Long.parseLong(ctx.pathParam("id"));
-        Product product = ctx.bodyAsClass(Product.class);
-        ctx.json(service.update(id, product));
+    public void updateProduct(Context context) {
+        long id = Long.parseLong(context.pathParam("id"));
+        Product product = context.bodyAsClass(Product.class);
+        context.json(service.updateProduct(id, product));
     }
 
-    public void delete(Context ctx) {
-        long id = Long.parseLong(ctx.pathParam("id"));
+    public void delete(Context context) {
+        long id = Long.parseLong(context.pathParam("id"));
         service.delete(id);
-        ctx.status(204);
+        context.status(204);
     }
 }
