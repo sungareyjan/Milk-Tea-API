@@ -15,7 +15,7 @@ public class PaymentRoutes {
 
     public void routes(Javalin app) {
         // Middleware for role checking
-        app.before("/api/payments/*", context -> RoleMiddleware.allow(context, Role.ADMIN));
+        app.before("/api/payments/*", context -> RoleMiddleware.allow(context, Role.ADMIN, Role.STAFF));
 
         // Routes
         app.post("/api/payments", paymentController::createPayment);

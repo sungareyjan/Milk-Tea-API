@@ -4,9 +4,8 @@ import com.app.model.Merchant;
 
 public interface MerchantRepositoryImpl {
 
-    Merchant findDefault();
-    Merchant findByPublicId(String publicId);
-    Merchant save(Merchant merchant);
-    boolean update(Merchant merchant);
+    Merchant findMerchantById(String publicId);
+    Merchant findMerchantFirst(); // default merchant
+    boolean updateMerchant(Merchant merchant);
 
 }

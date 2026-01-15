@@ -14,7 +14,7 @@ public class ProductRoutes {
 
     public  void routes(Javalin app){
         // Middleware for role checking
-        app.before("/api/products/*",context -> RoleMiddleware.allow(context, Role.ADMIN));
+        app.before("/api/products/*",context -> RoleMiddleware.allow(context, Role.ADMIN, Role.STAFF));
 
         // Routes
         app.get("api/products",productController::getAllProducts);

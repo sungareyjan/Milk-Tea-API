@@ -12,38 +12,29 @@ public class MerchantController {
         this.service = service;
     }
 
-    // Get default merchant
     public void getDefault(Context context) {
-        Merchant merchant = service.getDefault();
+        context.json(service.getDefaultMerchant());
+    }
+
+    public void findByPublicId(Context context) {
+        String publicId = context.pathParam("public_id");
+        Merchant merchant = service.findMerchantById(publicId);
+        if (merchant == null) {
+            context.status(404).result("Merchant not found");
+            return;
+        }
         context.json(merchant);
     }
 
-    // Create new merchant
-    public void create(Context context) {
-        Merchant merchant = context.bodyAsClass(Merchant.class);
-        Merchant saved = service.save(merchant);
-        context.json(saved);
-    }
-
-    // Update merchant
     public void update(Context context) {
         Merchant merchant = context.bodyAsClass(Merchant.class);
-        boolean updated = service.update(merchant);
-        if (updated) {
-            context.status(200).result("Merchant updated successfully");
-        } else {
-            context.status(404).result("Merchant not found");
-        }
-    }
 
-    // Find by publicId
-    public void findById(Context context) {
-        String publicId = context.pathParam("public_id");
-        Merchant merchant = service.findByPublicId(publicId);
-        if (merchant != null) {
-            context.json(merchant);
-        } else {
+        boolean updated = service.updateMerchant(merchant);
+        if (!updated) {
             context.status(404).result("Merchant not found");
+            return;
         }
+
+        context.result("Merchant updated successfully");
     }
 }

@@ -25,7 +25,7 @@ public class OrderController {
         Order order = context.bodyAsClass(Order.class);
 
         Order saved = orderService.createOrder(order);
-        Merchant merchant = merchantService.getDefault();
+        Merchant merchant = merchantService.getDefaultMerchant();
 
         context.json(orderService.buildReceipt(saved, merchant));
     }

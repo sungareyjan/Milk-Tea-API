@@ -17,55 +17,88 @@ public class MerchantRepository implements MerchantRepositoryImpl {
     }
 
     @Override
-    public Merchant findDefault() {
-        String query = "SELECT * FROM merchants ORDER BY id ASC LIMIT 1";
+    public Merchant findMerchantById(String publicId) {
+
+        String query = """
+            SELECT id, public_id, name, branch, address, contact_number
+            FROM merchants
+            WHERE public_id = ?
+        """;
+
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+
+            preparedStatement.setString(1, publicId);
+
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    return mapRow(resultSet);
+                }
+            }
+
+            return null;
+
+        } catch (SQLException e) {
+            throw new RuntimeException("Failed to fetch merchant", e);
+        }
+    }
+
+
+    @Override
+    public Merchant findMerchantFirst() {
+
+        String query = """
+            SELECT id, public_id, name, branch, address, contact_number
+            FROM merchants
+            ORDER BY id ASC
+            LIMIT 1
+        """;
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(query);
              ResultSet resultSet = preparedStatement.executeQuery()) {
 
             if (resultSet.next()) {
-                return map(resultSet);
+                return mapRow(resultSet);
             }
             return null;
 
         } catch (SQLException e) {
             throw new RuntimeException("Failed to fetch default merchant", e);
         }
+
     }
 
     @Override
-    public Merchant findByPublicId(String publicId) {
-        String query = "SELECT * FROM merchants WHERE public_id = ?";
+    public boolean updateMerchant(Merchant merchant) {
 
-        try (PreparedStatement ps = connection.prepareStatement(query)) {
-            ps.setString(1, publicId);
-            ResultSet resultSet = ps.executeQuery();
+        String query = """
+            UPDATE merchants
+            SET name = ?, branch = ?, address = ?, contact_number = ?
+            WHERE public_id = ?
+        """;
 
-            return resultSet.next() ? map(resultSet) : null;
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+
+            preparedStatement.setString(1, merchant.getName());
+            preparedStatement.setString(2, merchant.getBranch());
+            preparedStatement.setString(3, merchant.getAddress());
+            preparedStatement.setString(4, merchant.getContactNumber());
+            preparedStatement.setString(5, merchant.getPublicId());
+
+            return preparedStatement.executeUpdate() > 0;
 
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Failed to update merchant", e);
         }
     }
 
-    @Override
-    public Merchant save(Merchant merchant) {
+    private Merchant mapRow(ResultSet rs) throws SQLException {
+        Merchant merchant = new Merchant();
+        merchant.setId(rs.getLong("id"));
+        merchant.setPublicId(rs.getString("public_id"));
+        merchant.setName(rs.getString("name"));
+        merchant.setBranch(rs.getString("branch"));
+        merchant.setAddress(rs.getString("address"));
+        merchant.setContactNumber(rs.getString("contact_number"));
         return merchant;
-    }
-
-    @Override
-    public boolean update(Merchant merchant) {
-        // your update logic here
-        return true;
-    }
-
-    private Merchant map(ResultSet resultSet) throws SQLException {
-        return Merchant.builder()
-            .publicId(resultSet.getString("public_id"))
-            .name(resultSet.getString("name"))
-            .branch(resultSet.getString("branch"))
-            .address(resultSet.getString("address"))
-            .contactNumber(resultSet.getString("contact_number"))
-            .build();
     }
 }

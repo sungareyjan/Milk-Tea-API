@@ -13,7 +13,7 @@ public class CustomerRoutes {
     }
 
     public  void routes(Javalin app){
-        app.before("/api/customer/*",context -> RoleMiddleware.allow(context, Role.ADMIN));
+        app.before("/api/customer/*",context -> RoleMiddleware.allow(context, Role.ADMIN, Role.STAFF));
 
         // Routes
         app.get("api/customer",customerController::getAllCustomers);

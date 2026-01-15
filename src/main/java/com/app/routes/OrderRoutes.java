@@ -16,7 +16,7 @@ public class OrderRoutes {
     public void routes(Javalin app) {
 
         // Middleware for role checking
-        app.before("/api/orders/*", context -> RoleMiddleware.allow(context, Role.ADMIN));
+        app.before("/api/orders/*", context -> RoleMiddleware.allow(context, Role.ADMIN, Role.STAFF));
 
         // Routes
         app.post("/api/orders", orderController::createOrder);

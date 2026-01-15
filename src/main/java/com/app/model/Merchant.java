@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Merchant {
-
+    private long id;
     private String publicId;
     private String name;
     private String branch;         // branch location

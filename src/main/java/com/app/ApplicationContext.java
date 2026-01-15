@@ -60,6 +60,8 @@ public class ApplicationContext {
             // --- MERCHANT ---
             MerchantRepository merchantRepository = new MerchantRepository(connection);
             MerchantService merchantService = new MerchantService(merchantRepository);
+            MerchantController merchantController = new MerchantController(merchantService);
+            new MerchantRoutes(merchantController).routes(app);
 
             // --- ORDER ---
             OrderRepository orderRepository = new OrderRepository(connection);

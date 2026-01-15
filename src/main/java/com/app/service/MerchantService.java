@@ -13,30 +13,23 @@ public class MerchantService implements MerchantServiceImpl {
     }
 
     @Override
-    public Merchant findByPublicId(String publicId) {
-        return repository.findByPublicId(publicId);
-    }
-
-    @Override
-    public Merchant save(Merchant merchant) {
-        return repository.save(merchant);
-    }
-
-    @Override
-    public boolean update(Merchant merchant) {
-        return repository.update(merchant);
-    }
-
-    public Merchant getDefault() {
-        Merchant merchant = repository.findDefault();
+    public Merchant getDefaultMerchant() {
+        Merchant merchant = repository.findMerchantFirst();
 
         if (merchant == null) {
-            return Merchant.builder()
-                .name("RJ Codes Elit Milk Tea")
-                .branch("San Fernando, Pampanga")
-                .build();
+            throw new RuntimeException("No merchant found in database");
         }
 
         return merchant;
+    }
+
+    @Override
+    public Merchant findMerchantById(String publicId) {
+        return repository.findMerchantById(publicId);
+    }
+
+    @Override
+    public boolean updateMerchant(Merchant merchant) {
+        return repository.updateMerchant(merchant);
     }
 }
